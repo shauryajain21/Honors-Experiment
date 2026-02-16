@@ -4,6 +4,9 @@ import {
   JAR_STAGGER_DELAY,
   JAR_SHAKE_DURATION,
   BALL_BOUNCE_DURATION,
+  BALL_SLIDE_DELAY,
+  JAR_JUMBLE_DURATION,
+  JAR_TRANSITION_DURATION,
 } from "./constants";
 
 /**
@@ -125,6 +128,86 @@ export const pulseVariants: Variants = {
     transition: {
       duration: 1,
       repeat: Infinity,
+      ease: "easeInOut",
+    },
+  },
+};
+
+/**
+ * Ball slide-in animation (for training trials - balls slide in from left)
+ */
+export const ballSlideInVariants: Variants = {
+  hidden: {
+    x: -100,
+    opacity: 0,
+  },
+  visible: (i: number) => ({
+    x: 0,
+    opacity: 1,
+    transition: {
+      delay: i * (BALL_SLIDE_DELAY / 1000),
+      duration: 0.3,
+      ease: "easeOut",
+    },
+  }),
+};
+
+/**
+ * Jar jumble animation (for 101-jar selection screen)
+ */
+export const jarJumbleVariants: Variants = {
+  initial: {
+    x: 0,
+    y: 0,
+    rotate: 0,
+  },
+  jumble: (i: number) => ({
+    x: [0, -5 + Math.random() * 10, 5 - Math.random() * 10, -3 + Math.random() * 6, 0],
+    y: [0, 3 - Math.random() * 6, -3 + Math.random() * 6, 2 - Math.random() * 4, 0],
+    rotate: [0, -3 + Math.random() * 6, 3 - Math.random() * 6, -1 + Math.random() * 2, 0],
+    transition: {
+      duration: JAR_JUMBLE_DURATION / 1000,
+      times: [0, 0.25, 0.5, 0.75, 1],
+      delay: Math.random() * 0.2,
+    },
+  }),
+};
+
+/**
+ * Jar slide to left animation (for phase transitions)
+ */
+export const jarSlideLeftVariants: Variants = {
+  center: {
+    x: 0,
+    scale: 1,
+    opacity: 1,
+  },
+  left: {
+    x: -300,
+    scale: 0.7,
+    opacity: 0.6,
+    transition: {
+      duration: JAR_TRANSITION_DURATION / 1000,
+      ease: "easeInOut",
+    },
+  },
+};
+
+/**
+ * Jar slide from right to center animation (for phase transitions)
+ */
+export const jarSlideFromRightVariants: Variants = {
+  right: {
+    x: 300,
+    scale: 0.7,
+    opacity: 0,
+  },
+  center: {
+    x: 0,
+    scale: 1,
+    opacity: 1,
+    transition: {
+      duration: JAR_TRANSITION_DURATION / 1000,
       ease: "easeInOut",
     },
   },

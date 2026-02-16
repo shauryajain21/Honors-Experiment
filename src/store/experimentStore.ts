@@ -8,12 +8,12 @@ export type Phase =
   | "training-instructions"
   | "training-trials"
   | "main-instructions"
-  | "phase1-estimate"
+  | "experiment-instructions"
+  | "jar-selection"
   | "phase1-trials"
-  | "phase2-instructions"
-  | "phase2-estimate"
+  | "phase2-transition"
   | "phase2-trials"
-  | "phase3-instructions"
+  | "phase3-transition"
   | "phase3-trials"
   | "demographics"
   | "debrief";
@@ -50,9 +50,10 @@ export interface TrainingTrialData {
 }
 
 export interface DemographicsData {
-  isNYUStudent: boolean;
+  gender: "male" | "female" | "non-binary" | "prefer-not-to-share";
   academicYear: string;
-  majorsMinors: string;
+  major: string;
+  minor: string;
 }
 
 interface ExperimentStore {

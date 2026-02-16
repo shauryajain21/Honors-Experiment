@@ -183,15 +183,16 @@ export function exportDemographicsCSV(
   const csvRows: string[] = [];
 
   // CSV Header
-  csvRows.push(["SONA_ID", "Is_NYU_Student", "Academic_Year", "Majors_Minors"].join(","));
+  csvRows.push(["SONA_ID", "Gender", "Academic_Year", "Major", "Minor"].join(","));
 
   // Add demographics data
   csvRows.push(
     [
       sonaId,
-      demographics.isNYUStudent ? "yes" : "no",
+      demographics.gender,
       demographics.academicYear,
-      `"${demographics.majorsMinors}"`, // Quoted in case of commas
+      `"${demographics.major}"`,
+      `"${demographics.minor}"`,
     ].join(",")
   );
 

@@ -2,16 +2,26 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { useExperimentStore } from "@/store/experimentStore";
+import type { DemographicsData } from "@/store/experimentStore";
 
 export default function DemographicsPage() {
-  const [isNYUStudent, setIsNYUStudent] = useState<boolean | null>(null);
+  const [gender, setGender] = useState<DemographicsData["gender"] | "">("");
   const [year, setYear] = useState("");
-  const [majors, setMajors] = useState("");
+  const [major, setMajor] = useState("");
+  const [minor, setMinor] = useState("");
   const router = useRouter();
+  const setDemographics = useExperimentStore((s) => s.setDemographics);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    // TODO: Store demographics in Zustand
+    if (!gender) return;
+    setDemographics({
+      gender,
+      academicYear: year,
+      major,
+      minor,
+    });
     router.push("/debrief");
   };
 
@@ -20,7 +30,7 @@ export default function DemographicsPage() {
       <div className="bg-white rounded-2xl shadow-2xl p-8 w-full max-w-2xl">
         <div className="space-y-6">
           <h1 className="text-3xl font-bold text-gray-900 text-center">
-            We're almost there!
+            We&apos;re almost there!
           </h1>
           <p className="text-center text-gray-700">
             Before we end the study, please take a moment to answer the following questions
@@ -29,31 +39,27 @@ export default function DemographicsPage() {
           <form onSubmit={handleSubmit} className="space-y-6 mt-8">
             <div className="space-y-2">
               <label className="block text-lg font-medium text-gray-900">
-                Are you an NYU student?
+                What is your gender?
               </label>
-              <div className="flex gap-4">
-                <label className="flex items-center">
-                  <input
-                    type="radio"
-                    name="nyu-student"
-                    checked={isNYUStudent === true}
-                    onChange={() => setIsNYUStudent(true)}
-                    className="mr-2"
-                    required
-                  />
-                  <span className="text-gray-900">Yes</span>
-                </label>
-                <label className="flex items-center">
-                  <input
-                    type="radio"
-                    name="nyu-student"
-                    checked={isNYUStudent === false}
-                    onChange={() => setIsNYUStudent(false)}
-                    className="mr-2"
-                    required
-                  />
-                  <span className="text-gray-900">No</span>
-                </label>
+              <div className="flex flex-wrap gap-4">
+                {([
+                  { value: "male", label: "Male" },
+                  { value: "female", label: "Female" },
+                  { value: "non-binary", label: "Non-Binary" },
+                  { value: "prefer-not-to-share", label: "Prefer not to share" },
+                ] as const).map((option) => (
+                  <label key={option.value} className="flex items-center">
+                    <input
+                      type="radio"
+                      name="gender"
+                      checked={gender === option.value}
+                      onChange={() => setGender(option.value)}
+                      className="mr-2"
+                      required
+                    />
+                    <span className="text-gray-900">{option.label}</span>
+                  </label>
+                ))}
               </div>
             </div>
 
@@ -80,18 +86,25 @@ export default function DemographicsPage() {
             </div>
 
             <div className="space-y-2">
-              <label htmlFor="majors" className="block text-lg font-medium text-gray-900">
+              <label className="block text-lg font-medium text-gray-900">
                 List your major(s)/minor(s)
               </label>
-              <input
-                type="text"
-                id="majors"
-                value={majors}
-                onChange={(e) => setMajors(e.target.value)}
-                className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:border-nyu-purple text-gray-900"
-                placeholder="e.g., Psychology, Computer Science"
-                required
-              />
+              <div className="space-y-3">
+                <input
+                  type="text"
+                  value={major}
+                  onChange={(e) => setMajor(e.target.value)}
+                  className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:border-nyu-purple text-gray-900"
+                  placeholder="e.g., Psychology"
+                />
+                <input
+                  type="text"
+                  value={minor}
+                  onChange={(e) => setMinor(e.target.value)}
+                  className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:border-nyu-purple text-gray-900"
+                  placeholder="e.g., Computer Science"
+                />
+              </div>
             </div>
 
             <button

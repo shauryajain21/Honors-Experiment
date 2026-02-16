@@ -2,6 +2,7 @@
 
 import { motion } from "framer-motion";
 import { jarShakeVariants } from "@/lib/utils/animations";
+import { useId } from "react";
 
 interface JarDisplayProps {
   percentage: number;
@@ -28,15 +29,25 @@ export default function JarDisplay({
   animate = false,
   onAnimationComplete,
 }: JarDisplayProps) {
+  const uniqueId = useId();
+  const clipId = `jar-clip-${uniqueId}`;
+
   const labelColors = {
     red: "bg-red-500",
     green: "bg-green-500",
     neutral: "bg-gray-400",
   };
 
+  // The jar body path: wide mouth jar with rounded bottom
+  // Body runs from y=30 (top of body) to y=130 (bottom)
+  const bodyPath = "M 15 30 L 15 115 Q 15 130 30 130 L 70 130 Q 85 130 85 115 L 85 30 Z";
+  // Fill area height: body is 100 units tall (y 30 to 130)
+  const fillY = 30 + (100 * (100 - percentage)) / 100;
+  const fillHeight = (100 * percentage) / 100;
+
   return (
     <motion.div
-      className="flex flex-col items-center gap-2"
+      className="flex flex-col items-center gap-1"
       variants={animate ? jarShakeVariants : undefined}
       initial={animate ? "initial" : undefined}
       animate={animate ? "shake" : undefined}
@@ -51,44 +62,62 @@ export default function JarDisplay({
 
       {/* Jar visualization */}
       <div className={`${sizeClasses[size]} relative`}>
-        {/* Jar outline */}
         <svg
           viewBox="0 0 100 140"
           className="w-full h-full"
           xmlns="http://www.w3.org/2000/svg"
         >
-          {/* Jar body */}
+          {/* Clip path for fill */}
+          <defs>
+            <clipPath id={clipId}>
+              <path d={bodyPath} />
+            </clipPath>
+          </defs>
+
+          {/* Jar body outline */}
           <path
-            d="M 30 20 L 30 120 Q 30 130 40 130 L 60 130 Q 70 130 70 120 L 70 20 Q 70 15 65 15 L 35 15 Q 30 15 30 20 Z"
-            fill="none"
-            stroke="#666"
+            d={bodyPath}
+            fill="white"
+            stroke="#888"
             strokeWidth="2"
           />
 
-          {/* Jar neck */}
-          <rect x="40" y="5" width="20" height="15" fill="none" stroke="#666" strokeWidth="2" />
-
-          {/* Jar lid */}
-          <rect x="35" y="2" width="30" height="5" fill="#999" stroke="#666" strokeWidth="1" />
-
           {/* Fill level (black balls representation) */}
-          <defs>
-            <clipPath id={`jar-clip-${percentage}-${size}`}>
-              <path d="M 30 20 L 30 120 Q 30 130 40 130 L 60 130 Q 70 130 70 120 L 70 20 Z" />
-            </clipPath>
-          </defs>
-          <rect
-            x="30"
-            y={20 + (100 * (100 - percentage)) / 100}
-            width="40"
-            height={(100 * percentage) / 100}
-            fill="#1a1a1a"
-            clipPath={`url(#jar-clip-${percentage}-${size})`}
-            opacity="0.8"
-          />
+          {percentage > 0 && (
+            <rect
+              x="15"
+              y={fillY}
+              width="70"
+              height={fillHeight}
+              fill="#1a1a1a"
+              clipPath={`url(#${clipId})`}
+              opacity="0.85"
+            />
+          )}
 
           {/* Glass shine effect */}
-          <ellipse cx="45" cy="40" rx="8" ry="15" fill="white" opacity="0.2" />
+          <ellipse cx="35" cy="60" rx="8" ry="20" fill="white" opacity="0.25" />
+
+          {/* Jar rim / lip at top of body */}
+          <rect x="12" y="27" width="76" height="5" rx="2" fill="#bbb" stroke="#888" strokeWidth="1" />
+
+          {/* Dome lid */}
+          <path
+            d="M 25 28 Q 25 10 50 8 Q 75 10 75 28"
+            fill="#c8a262"
+            stroke="#a08040"
+            strokeWidth="1.5"
+          />
+          {/* Lid highlight */}
+          <path
+            d="M 35 22 Q 35 14 50 13 Q 55 13 55 16"
+            fill="none"
+            stroke="#ddc080"
+            strokeWidth="1.5"
+            opacity="0.6"
+          />
+          {/* Lid knob */}
+          <circle cx="50" cy="10" r="3" fill="#b89850" stroke="#a08040" strokeWidth="1" />
         </svg>
       </div>
 

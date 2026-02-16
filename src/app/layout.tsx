@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import DevWrapper from "@/components/ui/DevWrapper";
 
 export const metadata: Metadata = {
   title: "Psychology Experiment | NYU",
@@ -14,7 +15,9 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className="bg-nyu-purple min-h-screen">
-        {children}
+        <DevWrapper>
+          {children}
+        </DevWrapper>
       </body>
     </html>
   );

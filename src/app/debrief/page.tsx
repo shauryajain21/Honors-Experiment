@@ -1,9 +1,15 @@
 "use client";
 
+import { useState } from "react";
+import { useExperimentStore } from "@/store/experimentStore";
+
 export default function DebriefPage() {
-  const handleDownload = () => {
-    // TODO: Implement CSV export and download
-    alert("Data export will be implemented");
+  const [ended, setEnded] = useState(false);
+  const setEndTime = useExperimentStore((s) => s.setEndTime);
+
+  const handleEndStudy = () => {
+    setEndTime();
+    setEnded(true);
   };
 
   return (
@@ -45,15 +51,18 @@ export default function DebriefPage() {
           </div>
 
           <div className="flex flex-col items-center gap-4 mt-8">
-            <button
-              onClick={handleDownload}
-              className="bg-nyu-purple hover:bg-nyu-violet text-white font-semibold py-3 px-8 rounded-lg transition-colors"
-            >
-              Download My Data
-            </button>
-            <p className="text-gray-600 text-sm">
-              You may now close the experiment window.
-            </p>
+            {!ended ? (
+              <button
+                onClick={handleEndStudy}
+                className="bg-nyu-purple hover:bg-nyu-violet text-white font-semibold py-3 px-8 rounded-lg transition-colors"
+              >
+                End Study
+              </button>
+            ) : (
+              <p className="text-lg text-gray-700 font-medium">
+                You may now close the experiment window.
+              </p>
+            )}
           </div>
         </div>
       </div>

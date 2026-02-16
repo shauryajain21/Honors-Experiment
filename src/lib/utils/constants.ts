@@ -36,5 +36,14 @@ export const CONFIDENCE_SLIDER_STEP = 1;
 // Screen Size Requirements
 export const MIN_SCREEN_WIDTH = 1024;
 
+// Training Ball Animation
+export const BALL_SLIDE_DELAY = 150; // ms between each ball in training animation
+
+// Jar Selection Animation
+export const JAR_JUMBLE_DURATION = 1500; // ms for jar jumbling animation
+
+// Phase Transition Animation
+export const JAR_TRANSITION_DURATION = 800; // ms for jar slide left/right
+
 // Local Storage Keys
 export const STORAGE_KEY_EXPERIMENT = "experiment-storage";

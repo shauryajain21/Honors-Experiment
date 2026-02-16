@@ -39,11 +39,11 @@ export default function ConsentPage() {
           <div className="prose prose-sm max-w-none text-gray-700 space-y-4">
             <p>Please read the following consent form:</p>
 
-            <p className="font-semibold">
-              Study Title: Response Patterns in a Computer-Based Task<br/>
-              Principal Investigator: Dr. Laurence T. Maloney<br/>
+            <p>
+              <span className="font-semibold">Study Title:</span> Response Patterns in a Computer-Based Task<br/>
+              <span className="font-semibold">Principal Investigator:</span> Dr. Laurence T. Maloney<br/>
               Department of Psychology, New York University<br/>
-              Student Researcher: Saanika Banga<br/>
+              <span className="font-semibold">Student Researcher:</span> Saanika Banga<br/>
               Department of Psychology, New York University
             </p>
 
