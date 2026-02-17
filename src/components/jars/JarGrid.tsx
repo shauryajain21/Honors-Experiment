@@ -10,6 +10,7 @@ interface JarGridProps {
   onAnimationComplete?: () => void;
   size?: "sm" | "md" | "lg";
   columns?: number;
+  showBalls?: boolean;
 }
 
 export default function JarGrid({
@@ -18,6 +19,7 @@ export default function JarGrid({
   onAnimationComplete,
   size = "sm",
   columns,
+  showBalls = false,
 }: JarGridProps) {
   // Automatically determine columns based on number of jars
   const gridColumns = columns || (percentages.length === 11 ? 6 : 10);
@@ -45,6 +47,7 @@ export default function JarGrid({
               percentage={percentage}
               size={size}
               showPercentage={true}
+              showBalls={showBalls}
               color="neutral"
             />
           </motion.div>

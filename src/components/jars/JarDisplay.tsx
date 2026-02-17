@@ -2,7 +2,7 @@
 
 import { motion } from "framer-motion";
 import { jarShakeVariants } from "@/lib/utils/animations";
-import { useId } from "react";
+import { useId, useMemo } from "react";
 
 interface JarDisplayProps {
   percentage: number;
@@ -10,6 +10,7 @@ interface JarDisplayProps {
   size?: "sm" | "md" | "lg";
   color?: "red" | "green" | "neutral";
   showPercentage?: boolean;
+  showBalls?: boolean;
   animate?: boolean;
   onAnimationComplete?: () => void;
 }
@@ -34,12 +35,53 @@ const jarShineFills: Record<string, string> = {
   neutral: "rgba(255, 255, 255, 0.3)",
 };
 
+// Ball layout config per jar size
+const ballConfig = {
+  sm: { cols: 10, rows: 10, radius: 2.8, startX: 16, startY: 50, spacingX: 6.2, spacingY: 7.5 },
+  md: { cols: 10, rows: 10, radius: 2.8, startX: 16, startY: 50, spacingX: 6.2, spacingY: 7.5 },
+  lg: { cols: 10, rows: 10, radius: 2.8, startX: 16, startY: 50, spacingX: 6.2, spacingY: 7.5 },
+};
+
+function generateBallPositions(percentage: number, size: "sm" | "md" | "lg") {
+  const config = ballConfig[size];
+  const totalBalls = config.cols * config.rows;
+  const blackCount = Math.round((percentage / 100) * totalBalls);
+
+  // Create array of ball colors: black first, then white
+  const balls: boolean[] = [];
+  for (let i = 0; i < totalBalls; i++) {
+    balls.push(i < blackCount);
+  }
+
+  // Shuffle using seeded-like deterministic shuffle based on percentage
+  // (so the same percentage always looks the same)
+  for (let i = balls.length - 1; i > 0; i--) {
+    const j = Math.floor(((i * 7 + percentage * 13 + 37) % (i + 1)));
+    [balls[i], balls[j]] = [balls[j], balls[i]];
+  }
+
+  const positions: { cx: number; cy: number; isBlack: boolean }[] = [];
+  for (let row = 0; row < config.rows; row++) {
+    for (let col = 0; col < config.cols; col++) {
+      const idx = row * config.cols + col;
+      positions.push({
+        cx: config.startX + col * config.spacingX,
+        cy: config.startY + row * config.spacingY,
+        isBlack: balls[idx],
+      });
+    }
+  }
+
+  return { positions, radius: config.radius };
+}
+
 export default function JarDisplay({
   percentage,
   label,
   size = "md",
   color = "neutral",
   showPercentage = true,
+  showBalls = false,
   animate = false,
   onAnimationComplete,
 }: JarDisplayProps) {
@@ -49,6 +91,11 @@ export default function JarDisplay({
 
   // Classic rounded jar shape: narrower mouth, wider belly, rounded bottom
   const bodyPath = "M 32 30 L 32 38 Q 32 44 18 48 L 15 48 Q 10 48 10 54 L 10 115 Q 10 132 27 132 L 73 132 Q 90 132 90 115 L 90 54 Q 90 48 85 48 L 82 48 Q 68 44 68 38 L 68 30 Z";
+
+  const ballData = useMemo(
+    () => (showBalls ? generateBallPositions(percentage, size) : null),
+    [showBalls, percentage, size]
+  );
 
   return (
     <motion.div
@@ -77,13 +124,30 @@ export default function JarDisplay({
             </linearGradient>
           </defs>
 
-          {/* Jar body — translucent colored fill, NO black percentage fill */}
+          {/* Jar body — translucent colored fill */}
           <path
             d={bodyPath}
             fill={jarBodyFills[color]}
             stroke="#999"
             strokeWidth="1.8"
           />
+
+          {/* Tiny balls inside the jar */}
+          {ballData && (
+            <g clipPath={`url(#${clipId})`}>
+              {ballData.positions.map((ball, i) => (
+                <circle
+                  key={i}
+                  cx={ball.cx}
+                  cy={ball.cy}
+                  r={ballData.radius}
+                  fill={ball.isBlack ? "#1a1a1a" : "#f0f0f0"}
+                  stroke={ball.isBlack ? "#000" : "#ccc"}
+                  strokeWidth="0.4"
+                />
+              ))}
+            </g>
+          )}
 
           {/* Glass depth gradient overlay */}
           <path

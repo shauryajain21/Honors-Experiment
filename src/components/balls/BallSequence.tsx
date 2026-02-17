@@ -38,7 +38,7 @@ export default function BallSequence({
         </div>
       )}
 
-      <div className="flex flex-wrap gap-2 p-4 bg-gray-100 rounded-lg max-h-32 overflow-y-auto">
+      <div className="flex flex-wrap gap-2 p-4 bg-gray-200 rounded-lg max-h-32 overflow-y-auto border border-gray-300">
         {displayBalls.map((color, index) => (
           <Ball
             key={`ball-${index}`}

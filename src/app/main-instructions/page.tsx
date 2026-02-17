@@ -41,6 +41,7 @@ export default function MainInstructionsPage() {
               onAnimationComplete={handleJarsAnimationComplete}
               size="sm"
               columns={11}
+              showBalls={true}
             />
           </div>
 

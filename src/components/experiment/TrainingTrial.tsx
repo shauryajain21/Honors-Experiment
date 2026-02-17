@@ -97,6 +97,7 @@ export default function TrainingTrial({ trialNumber, onComplete }: TrainingTrial
                   size="md"
                   color="neutral"
                   showPercentage={true}
+                  showBalls={true}
                 />
               </button>
             ))}

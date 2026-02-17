@@ -58,7 +58,7 @@ export default function WizardNarration({
           title="Review instructions"
         >
           <WizardCharacter size="lg" variant="still" />
-          <span className="absolute top-0 left-0 bg-nyu-purple text-white text-xs w-6 h-6 rounded-full flex items-center justify-center font-bold animate-pulse shadow-lg">
+          <span className="absolute -top-1 -left-1 bg-nyu-purple text-white text-sm w-8 h-8 rounded-full flex items-center justify-center font-bold shadow-lg border-2 border-white animate-bounce">
             ?
           </span>
         </motion.button>
