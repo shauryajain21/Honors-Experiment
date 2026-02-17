@@ -1,7 +1,14 @@
 "use client";
 
 import { useState } from "react";
+import { motion } from "framer-motion";
 import { useExperimentStore } from "@/store/experimentStore";
+import WizardNarration from "@/components/wizard/WizardNarration";
+import WizardCharacter from "@/components/wizard/WizardCharacter";
+
+const DEBRIEF_STEPS = [
+  "Thank you for participating! Please read the debriefing information below and click 'End Study' when you are done.",
+];
 
 export default function DebriefPage() {
   const [ended, setEnded] = useState(false);
@@ -12,9 +19,50 @@ export default function DebriefPage() {
     setEnded(true);
   };
 
+  if (ended) {
+    return (
+      <div className="min-h-screen flex items-center justify-center p-4">
+        <div className="glass-card p-8 w-full max-w-2xl">
+          <div className="flex flex-col items-center gap-6 text-center">
+            {/* Party croc - bouncing animation */}
+            <motion.div
+              animate={{
+                y: [0, -15, 0, -10, 0, -5, 0],
+                rotate: [0, -5, 5, -3, 3, 0],
+              }}
+              transition={{
+                duration: 2,
+                repeat: Infinity,
+                repeatDelay: 1,
+                ease: "easeInOut",
+              }}
+            >
+              <WizardCharacter size="xl" variant="talking" />
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.3, duration: 0.5 }}
+              className="space-y-3"
+            >
+              <h2 className="text-2xl font-bold text-gray-900">
+                You did it! Great job!
+              </h2>
+              <p className="text-lg text-gray-600">
+                Thanks for completing the experiment with Mr. Croc. You may now close this window.
+              </p>
+            </motion.div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen flex items-center justify-center p-4">
-      <div className="bg-white rounded-2xl shadow-2xl p-8 w-full max-w-4xl max-h-[90vh] overflow-y-auto">
+      <WizardNarration steps={DEBRIEF_STEPS} />
+      <div className="glass-card p-8 w-full max-w-4xl max-h-[90vh] overflow-y-auto">
         <div className="space-y-6">
           <h1 className="text-3xl font-bold text-gray-900 text-center">
             Thank You!
@@ -51,18 +99,12 @@ export default function DebriefPage() {
           </div>
 
           <div className="flex flex-col items-center gap-4 mt-8">
-            {!ended ? (
-              <button
-                onClick={handleEndStudy}
-                className="bg-nyu-purple hover:bg-nyu-violet text-white font-semibold py-3 px-8 rounded-lg transition-colors"
-              >
-                End Study
-              </button>
-            ) : (
-              <p className="text-lg text-gray-700 font-medium">
-                You may now close the experiment window.
-              </p>
-            )}
+            <button
+              onClick={handleEndStudy}
+              className="bg-nyu-purple hover:bg-nyu-violet text-white font-semibold py-3 px-8 rounded-lg transition-colors"
+            >
+              End Study
+            </button>
           </div>
         </div>
       </div>

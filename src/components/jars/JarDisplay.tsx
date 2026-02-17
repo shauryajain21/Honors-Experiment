@@ -15,9 +15,23 @@ interface JarDisplayProps {
 }
 
 const sizeClasses = {
-  sm: "w-12 h-16",
-  md: "w-20 h-28",
-  lg: "w-32 h-44",
+  sm: "w-12 h-18",
+  md: "w-20 h-30",
+  lg: "w-32 h-48",
+};
+
+// Translucent body tint based on jar color
+const jarBodyFills: Record<string, string> = {
+  red: "rgba(239, 68, 68, 0.55)",
+  green: "rgba(34, 197, 94, 0.55)",
+  neutral: "rgba(200, 215, 230, 0.35)",
+};
+
+// Slightly stronger tint for the glass shine overlay
+const jarShineFills: Record<string, string> = {
+  red: "rgba(252, 165, 165, 0.35)",
+  green: "rgba(134, 239, 172, 0.35)",
+  neutral: "rgba(255, 255, 255, 0.3)",
 };
 
 export default function JarDisplay({
@@ -31,19 +45,10 @@ export default function JarDisplay({
 }: JarDisplayProps) {
   const uniqueId = useId();
   const clipId = `jar-clip-${uniqueId}`;
+  const gradientId = `jar-grad-${uniqueId}`;
 
-  const labelColors = {
-    red: "bg-red-500",
-    green: "bg-green-500",
-    neutral: "bg-gray-400",
-  };
-
-  // The jar body path: wide mouth jar with rounded bottom
-  // Body runs from y=30 (top of body) to y=130 (bottom)
-  const bodyPath = "M 15 30 L 15 115 Q 15 130 30 130 L 70 130 Q 85 130 85 115 L 85 30 Z";
-  // Fill area height: body is 100 units tall (y 30 to 130)
-  const fillY = 30 + (100 * (100 - percentage)) / 100;
-  const fillHeight = (100 * percentage) / 100;
+  // Classic rounded jar shape: narrower mouth, wider belly, rounded bottom
+  const bodyPath = "M 32 30 L 32 38 Q 32 44 18 48 L 15 48 Q 10 48 10 54 L 10 115 Q 10 132 27 132 L 73 132 Q 90 132 90 115 L 90 54 Q 90 48 85 48 L 82 48 Q 68 44 68 38 L 68 30 Z";
 
   return (
     <motion.div
@@ -53,75 +58,80 @@ export default function JarDisplay({
       animate={animate ? "shake" : undefined}
       onAnimationComplete={onAnimationComplete}
     >
-      {/* Label tag if provided */}
-      {label && (
-        <div className={`${labelColors[color]} text-white px-3 py-1 rounded-full text-sm font-bold`}>
-          {label}
-        </div>
-      )}
-
       {/* Jar visualization */}
       <div className={`${sizeClasses[size]} relative`}>
         <svg
-          viewBox="0 0 100 140"
+          viewBox="0 0 100 145"
           className="w-full h-full"
           xmlns="http://www.w3.org/2000/svg"
         >
-          {/* Clip path for fill */}
           <defs>
             <clipPath id={clipId}>
               <path d={bodyPath} />
             </clipPath>
+            {/* Subtle vertical gradient for glass depth */}
+            <linearGradient id={gradientId} x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stopColor="white" stopOpacity="0.15" />
+              <stop offset="50%" stopColor="white" stopOpacity="0" />
+              <stop offset="100%" stopColor="black" stopOpacity="0.05" />
+            </linearGradient>
           </defs>
 
-          {/* Jar body outline */}
+          {/* Jar body — translucent colored fill, NO black percentage fill */}
           <path
             d={bodyPath}
+            fill={jarBodyFills[color]}
+            stroke="#999"
+            strokeWidth="1.8"
+          />
+
+          {/* Glass depth gradient overlay */}
+          <path
+            d={bodyPath}
+            fill={`url(#${gradientId})`}
+            clipPath={`url(#${clipId})`}
+          />
+
+          {/* Left glass shine */}
+          <ellipse
+            cx="28"
+            cy="80"
+            rx="6"
+            ry="22"
+            fill={jarShineFills[color]}
+            clipPath={`url(#${clipId})`}
+          />
+
+          {/* Small secondary shine */}
+          <ellipse
+            cx="25"
+            cy="62"
+            rx="3"
+            ry="8"
             fill="white"
-            stroke="#888"
-            strokeWidth="2"
+            opacity="0.2"
+            clipPath={`url(#${clipId})`}
           />
 
-          {/* Fill level (black balls representation) */}
-          {percentage > 0 && (
-            <rect
-              x="15"
-              y={fillY}
-              width="70"
-              height={fillHeight}
-              fill="#1a1a1a"
-              clipPath={`url(#${clipId})`}
-              opacity="0.85"
-            />
-          )}
+          {/* Mouth rim — metallic band */}
+          <rect x="29" y="27" width="42" height="5" rx="2" fill="#ccc" stroke="#999" strokeWidth="1" />
 
-          {/* Glass shine effect */}
-          <ellipse cx="35" cy="60" rx="8" ry="20" fill="white" opacity="0.25" />
+          {/* Flat screw-top lid */}
+          <rect x="26" y="20" width="48" height="8" rx="3" fill="#b0b0b0" stroke="#888" strokeWidth="1" />
 
-          {/* Jar rim / lip at top of body */}
-          <rect x="12" y="27" width="76" height="5" rx="2" fill="#bbb" stroke="#888" strokeWidth="1" />
+          {/* Lid top ridge */}
+          <rect x="30" y="18" width="40" height="3" rx="1.5" fill="#c0c0c0" stroke="#999" strokeWidth="0.5" />
 
-          {/* Dome lid */}
-          <path
-            d="M 25 28 Q 25 10 50 8 Q 75 10 75 28"
-            fill="#c8a262"
-            stroke="#a08040"
-            strokeWidth="1.5"
-          />
-          {/* Lid highlight */}
-          <path
-            d="M 35 22 Q 35 14 50 13 Q 55 13 55 16"
-            fill="none"
-            stroke="#ddc080"
-            strokeWidth="1.5"
-            opacity="0.6"
-          />
-          {/* Lid knob */}
-          <circle cx="50" cy="10" r="3" fill="#b89850" stroke="#a08040" strokeWidth="1" />
+          {/* Lid grip lines */}
+          <line x1="34" y1="22" x2="34" y2="26" stroke="#999" strokeWidth="0.5" opacity="0.5" />
+          <line x1="42" y1="22" x2="42" y2="26" stroke="#999" strokeWidth="0.5" opacity="0.5" />
+          <line x1="50" y1="22" x2="50" y2="26" stroke="#999" strokeWidth="0.5" opacity="0.5" />
+          <line x1="58" y1="22" x2="58" y2="26" stroke="#999" strokeWidth="0.5" opacity="0.5" />
+          <line x1="66" y1="22" x2="66" y2="26" stroke="#999" strokeWidth="0.5" opacity="0.5" />
         </svg>
       </div>
 
-      {/* Percentage label */}
+      {/* Percentage label (only for training/instruction grids) */}
       {showPercentage && (
         <div className="text-sm font-semibold text-gray-700">
           {percentage}%

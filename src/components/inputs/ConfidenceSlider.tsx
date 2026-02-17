@@ -13,20 +13,6 @@ interface ConfidenceSliderProps {
   showValue?: boolean;
 }
 
-const confidenceLabels = [
-  "Not at all confident",
-  "Slightly confident",
-  "Somewhat confident",
-  "Moderately confident",
-  "Quite confident",
-  "Very confident",
-  "Extremely confident",
-  "Completely confident",
-  "Absolutely certain",
-  "Totally certain",
-  "Maximally certain",
-];
-
 export default function ConfidenceSlider({
   value,
   onChange,
@@ -55,9 +41,12 @@ export default function ConfidenceSlider({
         {label}
       </label>
 
-      <div className="flex items-center gap-4">
-        {/* Min label */}
-        <span className="text-sm text-gray-600 font-medium">{min}</span>
+      <div className="flex items-start gap-4">
+        {/* Min label with "Least confident" */}
+        <div className="text-center min-w-[80px] pt-1">
+          <span className="text-sm text-gray-600 font-medium">{min}</span>
+          <div className="text-xs text-gray-500">Least confident</div>
+        </div>
 
         {/* Slider */}
         <div className="flex-1 relative">
@@ -98,21 +87,19 @@ export default function ConfidenceSlider({
           </div>
         </div>
 
-        {/* Max label */}
-        <span className="text-sm text-gray-600 font-medium">{max}</span>
+        {/* Max label with "Most confident" */}
+        <div className="text-center min-w-[80px] pt-1">
+          <span className="text-sm text-gray-600 font-medium">{max}</span>
+          <div className="text-xs text-gray-500">Most confident</div>
+        </div>
       </div>
 
-      {/* Current value display with label */}
+      {/* Current value display */}
       {showValue && (
-        <div className="text-center space-y-1">
+        <div className="text-center">
           <div className="inline-block bg-green-600 text-white px-4 py-2 rounded-lg font-bold text-lg">
             {localValue} / {max}
           </div>
-          {confidenceLabels[localValue] && (
-            <div className="text-sm text-gray-600 italic">
-              {confidenceLabels[localValue]}
-            </div>
-          )}
         </div>
       )}
     </div>

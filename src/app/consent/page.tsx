@@ -2,6 +2,12 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import WizardNarration from "@/components/wizard/WizardNarration";
+
+const CONSENT_STEPS = [
+  "Please read through the consent form carefully before proceeding.",
+  "If you agree to participate, click 'I agree to participate' at the bottom of the page.",
+];
 
 export default function ConsentPage() {
   const [agreed, setAgreed] = useState<boolean | null>(null);
@@ -18,7 +24,7 @@ export default function ConsentPage() {
   if (agreed === false) {
     return (
       <div className="min-h-screen flex items-center justify-center p-4">
-        <div className="bg-white rounded-2xl shadow-2xl p-8 w-full max-w-4xl">
+        <div className="glass-card p-8 w-full max-w-4xl">
           <div className="text-center space-y-4">
             <h1 className="text-2xl font-bold text-gray-900">Thank you for your time</h1>
             <p className="text-gray-700">
@@ -32,7 +38,8 @@ export default function ConsentPage() {
 
   return (
     <div className="min-h-screen flex items-center justify-center p-4">
-      <div className="bg-white rounded-2xl shadow-2xl p-8 w-full max-w-4xl max-h-[90vh] overflow-y-auto">
+      <WizardNarration steps={CONSENT_STEPS} />
+      <div className="glass-card p-8 w-full max-w-4xl max-h-[90vh] overflow-y-auto">
         <div className="space-y-6">
           <h1 className="text-3xl font-bold text-gray-900 text-center">Consent Form</h1>
 

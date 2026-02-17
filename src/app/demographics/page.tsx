@@ -4,6 +4,11 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useExperimentStore } from "@/store/experimentStore";
 import type { DemographicsData } from "@/store/experimentStore";
+import WizardNarration from "@/components/wizard/WizardNarration";
+
+const DEMOGRAPHICS_STEPS = [
+  "You're almost done! Please answer a few quick questions about yourself.",
+];
 
 export default function DemographicsPage() {
   const [gender, setGender] = useState<DemographicsData["gender"] | "">("");
@@ -27,7 +32,8 @@ export default function DemographicsPage() {
 
   return (
     <div className="min-h-screen flex items-center justify-center p-4">
-      <div className="bg-white rounded-2xl shadow-2xl p-8 w-full max-w-2xl">
+      <WizardNarration steps={DEMOGRAPHICS_STEPS} />
+      <div className="glass-card p-8 w-full max-w-2xl">
         <div className="space-y-6">
           <h1 className="text-3xl font-bold text-gray-900 text-center">
             We&apos;re almost there!
@@ -87,7 +93,7 @@ export default function DemographicsPage() {
 
             <div className="space-y-2">
               <label className="block text-lg font-medium text-gray-900">
-                List your major(s)/minor(s)
+                List your majors/minors
               </label>
               <div className="space-y-3">
                 <input
@@ -95,14 +101,14 @@ export default function DemographicsPage() {
                   value={major}
                   onChange={(e) => setMajor(e.target.value)}
                   className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:border-nyu-purple text-gray-900"
-                  placeholder="e.g., Psychology"
+                  placeholder="Major e.g. Psychology"
                 />
                 <input
                   type="text"
                   value={minor}
                   onChange={(e) => setMinor(e.target.value)}
                   className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:border-nyu-purple text-gray-900"
-                  placeholder="e.g., Computer Science"
+                  placeholder="Minor e.g. Computer Science"
                 />
               </div>
             </div>

@@ -14,7 +14,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className="bg-nyu-purple min-h-screen">
+      <body className="min-h-screen bg-gradient-to-br from-[#57068C] via-[#6B1FA3] to-[#3D0563]">
         <DevWrapper>
           {children}
         </DevWrapper>

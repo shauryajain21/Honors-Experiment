@@ -39,7 +39,7 @@ export default function Modal({
               initial="hidden"
               animate="visible"
               exit="hidden"
-              className="bg-white rounded-2xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto p-8 relative"
+              className="glass-card max-w-2xl w-full max-h-[90vh] overflow-y-auto p-8 relative"
             >
               {/* Close button */}
               {showCloseButton && (

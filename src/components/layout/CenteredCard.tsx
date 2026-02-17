@@ -29,7 +29,7 @@ export default function CenteredCard({
   return (
     <div className="min-h-screen flex items-center justify-center p-4">
       <div
-        className={`bg-white rounded-2xl shadow-2xl p-8 w-full ${widthClasses[width]} ${
+        className={`glass-card p-8 w-full ${widthClasses[width]} ${
           maxHeight ? maxHeight : ""
         }`}
       >

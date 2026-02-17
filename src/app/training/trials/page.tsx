@@ -4,9 +4,14 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import TrainingTrial from "@/components/experiment/TrainingTrial";
 import Button from "@/components/ui/Button";
+import WizardNarration from "@/components/wizard/WizardNarration";
 import { useExperimentStore } from "@/store/experimentStore";
 import { TRAINING_TRIAL_COUNT } from "@/lib/utils/constants";
 import type { TrainingTrialData } from "@/store/experimentStore";
+
+const TRAINING_TRIAL_STEPS = [
+  "Look at the sample of balls shown above. Choose the jar that you think most likely produced this sample by clicking on it.",
+];
 
 export default function TrainingTrialsPage() {
   const router = useRouter();
@@ -27,7 +32,7 @@ export default function TrainingTrialsPage() {
   if (allComplete) {
     return (
       <div className="min-h-screen flex items-center justify-center p-4">
-        <div className="bg-white rounded-2xl shadow-2xl p-8 w-full max-w-4xl">
+        <div className="glass-card p-8 w-full max-w-4xl">
           <div className="text-center space-y-6">
             <h1 className="text-3xl font-bold text-gray-900">Training Complete</h1>
             <p className="text-gray-700">
@@ -44,7 +49,8 @@ export default function TrainingTrialsPage() {
 
   return (
     <div className="min-h-screen flex items-center justify-center p-4">
-      <div className="bg-white rounded-2xl shadow-2xl p-8 w-full max-w-4xl">
+      <WizardNarration steps={TRAINING_TRIAL_STEPS} />
+      <div className="glass-card p-8 w-full max-w-4xl">
         {/* Progress */}
         <div className="text-center text-sm text-gray-400 mb-4">
           Training Trial {currentTrial} of {TRAINING_TRIAL_COUNT}

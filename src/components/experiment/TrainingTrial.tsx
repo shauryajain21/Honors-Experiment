@@ -74,31 +74,33 @@ export default function TrainingTrial({ trialNumber, onComplete }: TrainingTrial
 
       {/* Two jars to choose from */}
       {ballsAnimated && (
-        <div className="flex justify-center gap-16 mt-8">
-          {[
-            { percentage: trialData.leftJar, side: "left" },
-            { percentage: trialData.rightJar, side: "right" },
-          ].map(({ percentage, side }) => (
-            <button
-              key={side}
-              onClick={() => handleJarSelect(percentage)}
-              className={`p-4 rounded-xl transition-all ${
-                selectedJar === percentage
-                  ? "ring-4 ring-nyu-purple bg-purple-50"
-                  : selectedJar !== null
-                  ? "opacity-50"
-                  : "hover:bg-gray-50 hover:ring-2 hover:ring-gray-300"
-              }`}
-              disabled={selectedJar !== null}
-            >
-              <JarDisplay
-                percentage={percentage}
-                size="md"
-                color="neutral"
-                showPercentage={true}
-              />
-            </button>
-          ))}
+        <div className="jar-stage">
+          <div className="flex justify-center gap-16">
+            {[
+              { percentage: trialData.leftJar, side: "left" },
+              { percentage: trialData.rightJar, side: "right" },
+            ].map(({ percentage, side }) => (
+              <button
+                key={side}
+                onClick={() => handleJarSelect(percentage)}
+                className={`p-4 rounded-xl transition-all ${
+                  selectedJar === percentage
+                    ? "ring-4 ring-nyu-purple bg-purple-50"
+                    : selectedJar !== null
+                    ? "opacity-50"
+                    : "hover:bg-gray-50 hover:ring-2 hover:ring-gray-300"
+                }`}
+                disabled={selectedJar !== null}
+              >
+                <JarDisplay
+                  percentage={percentage}
+                  size="md"
+                  color="neutral"
+                  showPercentage={true}
+                />
+              </button>
+            ))}
+          </div>
         </div>
       )}
 

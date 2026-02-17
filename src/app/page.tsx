@@ -2,6 +2,12 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import WizardNarration from "@/components/wizard/WizardNarration";
+
+const LANDING_STEPS = [
+  "Hey there! I'm Mr. Croc, your guide for today's experiment. I'll be here to walk you through each step — let's get started!",
+  "Please enter your SONA ID below to begin.",
+];
 
 export default function LandingPage() {
   const [sonaId, setSonaId] = useState("");
@@ -17,7 +23,8 @@ export default function LandingPage() {
 
   return (
     <div className="min-h-screen flex items-center justify-center p-4">
-      <div className="bg-white rounded-2xl shadow-2xl p-8 w-full max-w-2xl">
+      <WizardNarration steps={LANDING_STEPS} />
+      <div className="glass-card p-8 w-full max-w-2xl">
         <div className="text-center space-y-6">
           <h1 className="text-3xl font-bold text-gray-900">
             Welcome!

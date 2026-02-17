@@ -49,20 +49,6 @@ export default function BallSequence({
         ))}
       </div>
 
-      {/* Statistics */}
-      <div className="text-xs text-gray-600 flex gap-4">
-        <span>
-          Black: {balls.filter(b => b === "black").length}
-        </span>
-        <span>
-          White: {balls.filter(b => b === "white").length}
-        </span>
-        <span>
-          Black %: {balls.length > 0
-            ? Math.round((balls.filter(b => b === "black").length / balls.length) * 100)
-            : 0}%
-        </span>
-      </div>
     </div>
   );
 }
