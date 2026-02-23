@@ -39,7 +39,7 @@ export default function Phase2TransitionPage() {
               <WizardCharacter size="sm" />
             </div>
             <p className="text-gray-700 leading-relaxed">
-              The red jar has now been kept to the side. A new green jar has been selected from the array of 101 jars. Similar to the previous trials, you will be asked to estimate the probability of black balls in this jar and your confidence in your estimates. Press the space bar to release a ball from the jar. Once you have read the instructions you can close this pop up by clicking on the cross in the corner.
+              The red jar has now been kept to the side. A new green jar has been selected from the array of 101 jars. Similar to the previous trials, you will be asked to estimate the probability of black balls in this jar and your confidence in your estimates. Balls will be drawn automatically. Once you have read the instructions you can close this pop up by clicking on the cross in the corner.
             </p>
           </div>
         </Modal>

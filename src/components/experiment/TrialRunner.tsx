@@ -5,26 +5,31 @@ import { motion, AnimatePresence } from "framer-motion";
 import JarDisplay from "@/components/jars/JarDisplay";
 import Ball from "@/components/balls/Ball";
 import BallSequence from "@/components/balls/BallSequence";
-import ProbabilitySlider from "@/components/inputs/ProbabilitySlider";
+import ProbabilityButtons from "@/components/inputs/ProbabilityButtons";
 import ConfidenceSlider from "@/components/inputs/ConfidenceSlider";
 import Button from "@/components/ui/Button";
 import WizardNarration from "@/components/wizard/WizardNarration";
-import { useSpacebar } from "@/hooks/useKeyPress";
 import { useAudio } from "@/hooks/useAudio";
 import { drawBall } from "@/lib/experiment/ballDrawing";
 import { fadeInVariants } from "@/lib/utils/animations";
+import { PHASE_TRIAL_COUNT } from "@/lib/utils/constants";
 import type { BallColor, TrialData, JarColor } from "@/store/experimentStore";
 
 const TRIAL_STEPS = [
-  "Press the spacebar to draw a ball from the jar. After seeing the ball, estimate the probability of black balls and rate your confidence.",
+  "Observe the ball drawn from the jar. Then estimate the probability of black balls and rate your confidence.",
 ];
 
-type TrialState = "WAITING_FOR_SPACEBAR" | "ANIMATING" | "ESTIMATING";
+type TrialState =
+  | "DRAWING"
+  | "ESTIMATING"
+  | "CONFIDENCE"
+  | "READY_NEXT";
 
 interface TrialRunnerProps {
   jarColor: "red" | "green";
   jarPercentage: number;
   totalTrials: number;
+  phaseNumber: 1 | 2 | 3;
   onTrialComplete: (data: TrialData) => void;
   onAllTrialsComplete: () => void;
   sideJar?: { color: "red" | "green"; percentage: number } | null;
@@ -34,30 +39,30 @@ export default function TrialRunner({
   jarColor,
   jarPercentage,
   totalTrials,
+  phaseNumber,
   onTrialComplete,
   onAllTrialsComplete,
   sideJar = null,
 }: TrialRunnerProps) {
-  const [trialState, setTrialState] = useState<TrialState>("WAITING_FOR_SPACEBAR");
+  const [trialState, setTrialState] = useState<TrialState>("DRAWING");
   const [currentTrial, setCurrentTrial] = useState(1);
   const [ballSequence, setBallSequence] = useState<BallColor[]>([]);
   const [currentBall, setCurrentBall] = useState<BallColor | null>(null);
   const [isShaking, setIsShaking] = useState(false);
-  const [probability, setProbability] = useState(0);
+  const [probability, setProbability] = useState<number | null>(null);
   const [confidence, setConfidence] = useState(0);
+  const [confidenceInteracted, setConfidenceInteracted] = useState(false);
   const estimateStartRef = useRef<number>(0);
 
   const { playJarShake, playBallBounce } = useAudio();
 
-  // Handle spacebar press to draw a ball
-  const handleSpacebar = useCallback(() => {
-    if (trialState !== "WAITING_FOR_SPACEBAR") return;
-    setTrialState("ANIMATING");
-    setIsShaking(true);
-    playJarShake();
-  }, [trialState, playJarShake]);
-
-  useSpacebar(handleSpacebar, trialState === "WAITING_FOR_SPACEBAR");
+  // Auto-draw ball when entering DRAWING state
+  useEffect(() => {
+    if (trialState === "DRAWING" && !isShaking && !currentBall) {
+      setIsShaking(true);
+      playJarShake();
+    }
+  }, [trialState, isShaking, currentBall, playJarShake]);
 
   // After jar shake completes, draw and show ball
   const handleShakeComplete = useCallback(() => {
@@ -67,7 +72,7 @@ export default function TrialRunner({
     playBallBounce();
   }, [jarPercentage, playBallBounce]);
 
-  // After ball bounce animation completes, show sliders
+  // After ball bounce animation completes, move to estimating
   const handleBallAnimationComplete = useCallback(() => {
     if (currentBall) {
       setBallSequence((prev) => [...prev, currentBall]);
@@ -76,8 +81,26 @@ export default function TrialRunner({
     }
   }, [currentBall]);
 
-  // Handle submit estimate
-  const handleSubmit = () => {
+  // Handle probability selection → show confidence
+  const handleProbabilitySelect = (value: number) => {
+    setProbability(value);
+    setTrialState("CONFIDENCE");
+  };
+
+  // Handle confidence change
+  const handleConfidenceChange = (value: number) => {
+    setConfidence(value);
+    setConfidenceInteracted(true);
+  };
+
+  // Handle confidence submit
+  const handleConfidenceSubmit = () => {
+    if (!confidenceInteracted) return;
+    setTrialState("READY_NEXT");
+  };
+
+  // Handle Next → record data and auto-draw next ball
+  const handleNext = () => {
     const reactionTime = Date.now() - estimateStartRef.current;
 
     const trialData: TrialData = {
@@ -87,7 +110,7 @@ export default function TrialRunner({
       jarPercentage,
       drawnBall: currentBall!,
       ballSequence: [...ballSequence],
-      estimatedProbability: probability,
+      estimatedProbability: probability!,
       confidence,
       reactionTime,
     };
@@ -100,11 +123,17 @@ export default function TrialRunner({
       // Reset for next trial
       setCurrentTrial((prev) => prev + 1);
       setCurrentBall(null);
-      setProbability(0);
+      setProbability(null);
       setConfidence(0);
-      setTrialState("WAITING_FOR_SPACEBAR");
+      setConfidenceInteracted(false);
+      setTrialState("DRAWING");
     }
   };
+
+  // Calculate global trial number (across all 99 trials)
+  const globalTrialNumber =
+    (phaseNumber - 1) * PHASE_TRIAL_COUNT + currentTrial;
+  const totalGlobalTrials = PHASE_TRIAL_COUNT * 3;
 
   return (
     <div className="min-h-screen flex items-center justify-center p-4">
@@ -112,6 +141,11 @@ export default function TrialRunner({
       <div className="w-full max-w-4xl">
         <div className="glass-card p-8">
           <div className="space-y-6">
+            {/* Global trial countdown */}
+            <div className="text-center text-sm text-gray-400">
+              Trial {globalTrialNumber} of {totalGlobalTrials}
+            </div>
+
             {/* Jar display area */}
             <div className="jar-stage">
               <div className="flex justify-center items-start gap-8">
@@ -138,9 +172,9 @@ export default function TrialRunner({
                     showPercentage={false}
                   />
 
-                  {/* Current ball animation */}
+                  {/* Current ball animation (during drawing) */}
                   <AnimatePresence>
-                    {currentBall && trialState === "ANIMATING" && (
+                    {currentBall && trialState === "DRAWING" && (
                       <div className="mt-4">
                         <Ball
                           color={currentBall}
@@ -153,7 +187,7 @@ export default function TrialRunner({
                   </AnimatePresence>
 
                   {/* Show current ball after animation (static) */}
-                  {currentBall && trialState === "ESTIMATING" && (
+                  {currentBall && trialState !== "DRAWING" && (
                     <div className="mt-4">
                       <Ball color={currentBall} size={50} />
                     </div>
@@ -167,8 +201,8 @@ export default function TrialRunner({
               <BallSequence balls={ballSequence} size={24} />
             )}
 
-            {/* Waiting state */}
-            {trialState === "WAITING_FOR_SPACEBAR" && (
+            {/* Drawing state */}
+            {trialState === "DRAWING" && (
               <motion.div
                 variants={fadeInVariants}
                 initial="hidden"
@@ -176,12 +210,12 @@ export default function TrialRunner({
                 className="text-center"
               >
                 <p className="text-lg text-gray-600">
-                  Press the space bar to release the next ball
+                  Drawing a ball from the jar...
                 </p>
               </motion.div>
             )}
 
-            {/* Estimating state - sliders */}
+            {/* Estimating state - probability buttons */}
             {trialState === "ESTIMATING" && (
               <motion.div
                 variants={fadeInVariants}
@@ -189,23 +223,66 @@ export default function TrialRunner({
                 animate="visible"
                 className="space-y-6"
               >
-                <p className="text-lg text-gray-700 text-center font-medium">
-                  What is your estimate about the probability of black balls in this jar?
-                </p>
-
-                <ProbabilitySlider
+                <ProbabilityButtons
                   value={probability}
-                  onChange={setProbability}
-                  label=""
+                  onChange={handleProbabilitySelect}
                 />
+              </motion.div>
+            )}
+
+            {/* Confidence state - slider */}
+            {trialState === "CONFIDENCE" && (
+              <motion.div
+                variants={fadeInVariants}
+                initial="hidden"
+                animate="visible"
+                className="space-y-6"
+              >
+                <div className="text-center">
+                  <span className="inline-block bg-nyu-purple text-white px-4 py-2 rounded-lg font-bold text-lg">
+                    Your estimate: {probability}%
+                  </span>
+                </div>
 
                 <ConfidenceSlider
                   value={confidence}
-                  onChange={setConfidence}
+                  onChange={handleConfidenceChange}
                 />
 
                 <div className="text-center">
-                  <Button onClick={handleSubmit}>Next</Button>
+                  <Button
+                    onClick={handleConfidenceSubmit}
+                    disabled={!confidenceInteracted}
+                  >
+                    Submit
+                  </Button>
+                  {!confidenceInteracted && (
+                    <p className="text-sm text-red-500 mt-2">
+                      Please adjust the confidence slider before submitting
+                    </p>
+                  )}
+                </div>
+              </motion.div>
+            )}
+
+            {/* Ready for next - show summary and Next button */}
+            {trialState === "READY_NEXT" && (
+              <motion.div
+                variants={fadeInVariants}
+                initial="hidden"
+                animate="visible"
+                className="space-y-4"
+              >
+                <div className="text-center space-y-2">
+                  <p className="text-gray-600">
+                    Estimate: <span className="font-bold">{probability}%</span> | Confidence: <span className="font-bold">{confidence}/10</span>
+                  </p>
+                </div>
+
+                <div className="text-center">
+                  <Button onClick={handleNext}>
+                    {currentTrial >= totalTrials ? "Finish" : "Next"}
+                  </Button>
                 </div>
               </motion.div>
             )}

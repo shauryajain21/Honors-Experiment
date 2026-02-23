@@ -4,7 +4,7 @@ export const NYU_VIOLET = "#8900E1";
 
 // Trial Counts
 export const TRAINING_TRIAL_COUNT = 10;
-export const PHASE_TRIAL_COUNT = 40;
+export const PHASE_TRIAL_COUNT = 33;
 
 // Jar Counts
 export const TRAINING_JAR_COUNT = 11;

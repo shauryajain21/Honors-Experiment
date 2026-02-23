@@ -79,29 +79,56 @@ export default function TrainingTrial({ trialNumber, onComplete }: TrainingTrial
             {[
               { percentage: trialData.leftJar, side: "left" },
               { percentage: trialData.rightJar, side: "right" },
-            ].map(({ percentage, side }) => (
-              <button
-                key={side}
-                onClick={() => handleJarSelect(percentage)}
-                className={`p-4 rounded-xl transition-all ${
-                  selectedJar === percentage
-                    ? "ring-4 ring-nyu-purple bg-purple-50"
-                    : selectedJar !== null
-                    ? "opacity-50"
-                    : "hover:bg-gray-50 hover:ring-2 hover:ring-gray-300"
-                }`}
-                disabled={selectedJar !== null}
-              >
-                <JarDisplay
-                  percentage={percentage}
-                  size="md"
-                  color="neutral"
-                  showPercentage={true}
-                  showBalls={true}
-                />
-              </button>
-            ))}
+            ].map(({ percentage, side }) => {
+              const isCorrect = percentage === trialData.correctJar;
+              const isSelected = selectedJar === percentage;
+              let ringClass = "";
+              if (selectedJar !== null) {
+                if (isCorrect) {
+                  ringClass = "ring-4 ring-green-500 bg-green-50";
+                } else if (isSelected) {
+                  ringClass = "ring-4 ring-red-500 bg-red-50";
+                } else {
+                  ringClass = "opacity-50";
+                }
+              }
+              return (
+                <button
+                  key={side}
+                  onClick={() => handleJarSelect(percentage)}
+                  className={`p-4 rounded-xl transition-all ${
+                    selectedJar === null
+                      ? "hover:bg-gray-50 hover:ring-2 hover:ring-gray-300"
+                      : ringClass
+                  }`}
+                  disabled={selectedJar !== null}
+                >
+                  <JarDisplay
+                    percentage={percentage}
+                    size="md"
+                    color="neutral"
+                    showPercentage={true}
+                    showBalls={true}
+                  />
+                </button>
+              );
+            })}
           </div>
+        </div>
+      )}
+
+      {/* Feedback message */}
+      {selectedJar !== null && (
+        <div className="text-center mt-4">
+          {selectedJar === trialData.correctJar ? (
+            <p className="text-lg font-semibold text-green-600">
+              Correct! The sample came from the {trialData.correctJar}% jar.
+            </p>
+          ) : (
+            <p className="text-lg font-semibold text-red-600">
+              Incorrect. The sample actually came from the {trialData.correctJar}% jar.
+            </p>
+          )}
         </div>
       )}
 

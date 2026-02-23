@@ -10,14 +10,21 @@ export default function Phase3Page() {
   const redJarPercentage = useExperimentStore((s) => s.redJarPercentage);
   const greenJarPercentage = useExperimentStore((s) => s.greenJarPercentage);
   const addPhase3Trial = useExperimentStore((s) => s.addPhase3Trial);
+  const saveToBackend = useExperimentStore((s) => s.saveToBackend);
+
+  const handleAllComplete = () => {
+    saveToBackend();
+    router.push("/demographics");
+  };
 
   return (
     <TrialRunner
       jarColor="red"
       jarPercentage={redJarPercentage}
       totalTrials={PHASE_TRIAL_COUNT}
+      phaseNumber={3}
       onTrialComplete={addPhase3Trial}
-      onAllTrialsComplete={() => router.push("/demographics")}
+      onAllTrialsComplete={handleAllComplete}
       sideJar={{ color: "green", percentage: greenJarPercentage }}
     />
   );

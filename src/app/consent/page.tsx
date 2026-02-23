@@ -62,7 +62,7 @@ export default function ConsentPage() {
 
               <div>
                 <h3 className="font-semibold text-gray-900">Procedures:</h3>
-                <p>If you agree to participate, you will complete a computer-based task lasting approximately 45–60 minutes. During the study, you will view the visual displays presented on the screen and make judgments about upcoming outcomes.</p>
+                <p>If you agree to participate, you will complete a computer-based task lasting approximately 45–60 minutes. The study consists of 10 training trials and 99 main experiment trials. During the study, you will view the visual displays presented on the screen and make judgments about upcoming outcomes.</p>
               </div>
 
               <div>

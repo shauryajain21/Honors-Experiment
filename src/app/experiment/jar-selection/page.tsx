@@ -10,7 +10,7 @@ const JAR_SELECTION_STEPS = [
 ];
 import JarDisplay from "@/components/jars/JarDisplay";
 import JarGrid from "@/components/jars/JarGrid";
-import ProbabilitySlider from "@/components/inputs/ProbabilitySlider";
+import ProbabilityButtons from "@/components/inputs/ProbabilityButtons";
 import ConfidenceSlider from "@/components/inputs/ConfidenceSlider";
 import Button from "@/components/ui/Button";
 import { useExperimentStore } from "@/store/experimentStore";
@@ -19,7 +19,7 @@ import { useAudio } from "@/hooks/useAudio";
 import { jarJumbleVariants, fadeInVariants } from "@/lib/utils/animations";
 import { JAR_JUMBLE_DURATION } from "@/lib/utils/constants";
 
-type AnimationPhase = "showing-jars" | "jumbling" | "selecting" | "marking" | "estimate";
+type AnimationPhase = "showing-jars" | "jumbling" | "selecting" | "marking" | "estimate" | "confidence";
 
 export default function JarSelectionPage() {
   const router = useRouter();
@@ -32,8 +32,9 @@ export default function JarSelectionPage() {
 
   const { playJarShake } = useAudio();
   const [phase, setPhase] = useState<AnimationPhase>("showing-jars");
-  const [probability, setProbability] = useState(0);
+  const [probability, setProbability] = useState<number | null>(null);
   const [confidence, setConfidence] = useState(0);
+  const [confidenceInteracted, setConfidenceInteracted] = useState(false);
 
   const mainJars = getMainExperimentJarPercentages();
 
@@ -70,7 +71,18 @@ export default function JarSelectionPage() {
     }
   }, [phase, handleStartJumble]);
 
+  const handleProbabilitySelect = (value: number) => {
+    setProbability(value);
+    setPhase("confidence");
+  };
+
+  const handleConfidenceChange = (value: number) => {
+    setConfidence(value);
+    setConfidenceInteracted(true);
+  };
+
   const handleSubmit = () => {
+    if (!confidenceInteracted || probability === null) return;
     setRedJarEstimate({
       probability,
       confidence,
@@ -160,7 +172,7 @@ export default function JarSelectionPage() {
             </div>
           )}
 
-          {/* Phase: estimate */}
+          {/* Phase: estimate - probability buttons */}
           <AnimatePresence>
             {phase === "estimate" && (
               <motion.div
@@ -178,23 +190,53 @@ export default function JarSelectionPage() {
                   />
                 </div>
 
-                <p className="text-lg text-gray-700 text-center font-medium">
-                  Without drawing a ball, what is your initial estimate of the probability of black balls in this jar?
-                </p>
-
-                <ProbabilitySlider
+                <ProbabilityButtons
                   value={probability}
-                  onChange={setProbability}
-                  label=""
+                  onChange={handleProbabilitySelect}
+                  label="Without drawing a ball, what is your initial estimate of the probability of black balls in this jar?"
                 />
+              </motion.div>
+            )}
+          </AnimatePresence>
+
+          {/* Phase: confidence */}
+          <AnimatePresence>
+            {phase === "confidence" && (
+              <motion.div
+                variants={fadeInVariants}
+                initial="hidden"
+                animate="visible"
+                className="space-y-6"
+              >
+                <div className="jar-stage flex justify-center mb-6">
+                  <JarDisplay
+                    percentage={redJarPercentage}
+                    size="lg"
+                    color="red"
+                    showPercentage={false}
+                  />
+                </div>
+
+                <div className="text-center">
+                  <span className="inline-block bg-nyu-purple text-white px-4 py-2 rounded-lg font-bold text-lg">
+                    Your estimate: {probability}%
+                  </span>
+                </div>
 
                 <ConfidenceSlider
                   value={confidence}
-                  onChange={setConfidence}
+                  onChange={handleConfidenceChange}
                 />
 
                 <div className="text-center">
-                  <Button onClick={handleSubmit}>Next</Button>
+                  <Button onClick={handleSubmit} disabled={!confidenceInteracted}>
+                    Next
+                  </Button>
+                  {!confidenceInteracted && (
+                    <p className="text-sm text-red-500 mt-2">
+                      Please adjust the confidence slider before submitting
+                    </p>
+                  )}
                 </div>
               </motion.div>
             )}

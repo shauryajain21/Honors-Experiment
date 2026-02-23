@@ -16,6 +16,7 @@ const TRAINING_TRIAL_STEPS = [
 export default function TrainingTrialsPage() {
   const router = useRouter();
   const addTrainingTrial = useExperimentStore((s) => s.addTrainingTrial);
+  const saveToBackend = useExperimentStore((s) => s.saveToBackend);
   const [currentTrial, setCurrentTrial] = useState(1);
   const [allComplete, setAllComplete] = useState(false);
 
@@ -24,6 +25,7 @@ export default function TrainingTrialsPage() {
 
     if (currentTrial >= TRAINING_TRIAL_COUNT) {
       setAllComplete(true);
+      saveToBackend();
     } else {
       setCurrentTrial((prev) => prev + 1);
     }

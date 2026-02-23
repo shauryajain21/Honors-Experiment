@@ -107,6 +107,9 @@ interface ExperimentStore {
   setStartTime: () => void;
   setEndTime: () => void;
 
+  // Save to backend
+  saveToBackend: () => Promise<boolean>;
+
   // Reset
   resetExperiment: () => void;
 }
@@ -195,6 +198,34 @@ export const useExperimentStore = create<ExperimentStore>()(
         set({ experimentStartTime: new Date().toISOString() }),
 
       setEndTime: () => set({ experimentEndTime: new Date().toISOString() }),
+
+      saveToBackend: async () => {
+        const state = get();
+        try {
+          const response = await fetch("/api/save-experiment", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              sonaId: state.sonaId,
+              redJarPercentage: state.redJarPercentage,
+              greenJarPercentage: state.greenJarPercentage,
+              redJarInitialEstimate: state.redJarInitialEstimate,
+              greenJarInitialEstimate: state.greenJarInitialEstimate,
+              trainingTrials: state.trainingTrials,
+              phase1Trials: state.phase1Trials,
+              phase2Trials: state.phase2Trials,
+              phase3Trials: state.phase3Trials,
+              demographics: state.demographics,
+              experimentStartTime: state.experimentStartTime,
+              experimentEndTime: state.experimentEndTime,
+            }),
+          });
+          return response.ok;
+        } catch (error) {
+          console.error("Failed to save to backend:", error);
+          return false;
+        }
+      },
 
       resetExperiment: () =>
         set({

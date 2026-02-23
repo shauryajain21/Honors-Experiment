@@ -17,6 +17,7 @@ export default function DemographicsPage() {
   const [minor, setMinor] = useState("");
   const router = useRouter();
   const setDemographics = useExperimentStore((s) => s.setDemographics);
+  const saveToBackend = useExperimentStore((s) => s.saveToBackend);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -27,6 +28,7 @@ export default function DemographicsPage() {
       major,
       minor,
     });
+    saveToBackend();
     router.push("/debrief");
   };
 

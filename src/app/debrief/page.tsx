@@ -12,10 +12,15 @@ const DEBRIEF_STEPS = [
 
 export default function DebriefPage() {
   const [ended, setEnded] = useState(false);
+  const [saving, setSaving] = useState(false);
   const setEndTime = useExperimentStore((s) => s.setEndTime);
+  const saveToBackend = useExperimentStore((s) => s.saveToBackend);
 
-  const handleEndStudy = () => {
+  const handleEndStudy = async () => {
     setEndTime();
+    setSaving(true);
+    await saveToBackend();
+    setSaving(false);
     setEnded(true);
   };
 
@@ -101,9 +106,10 @@ export default function DebriefPage() {
           <div className="flex flex-col items-center gap-4 mt-8">
             <button
               onClick={handleEndStudy}
-              className="bg-nyu-purple hover:bg-nyu-violet text-white font-semibold py-3 px-8 rounded-lg transition-colors"
+              disabled={saving}
+              className="bg-nyu-purple hover:bg-nyu-violet text-white font-semibold py-3 px-8 rounded-lg transition-colors disabled:opacity-50"
             >
-              End Study
+              {saving ? "Saving data..." : "End Study"}
             </button>
           </div>
         </div>
