@@ -138,6 +138,7 @@ export async function POST(request: NextRequest) {
           jar_type: trial.jarType,
           jar_percentage: trial.jarPercentage,
           drawn_ball: trial.drawnBall,
+          ball_sequence: trial.ballSequence,
           ball_sequence_length: trial.ballSequence.length,
           estimated_probability: trial.estimatedProbability,
           confidence: trial.confidence,
