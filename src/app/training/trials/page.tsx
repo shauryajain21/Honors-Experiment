@@ -20,12 +20,12 @@ export default function TrainingTrialsPage() {
   const [currentTrial, setCurrentTrial] = useState(1);
   const [allComplete, setAllComplete] = useState(false);
 
-  const handleTrialComplete = (data: TrainingTrialData) => {
+  const handleTrialComplete = async (data: TrainingTrialData) => {
     addTrainingTrial(data);
 
     if (currentTrial >= TRAINING_TRIAL_COUNT) {
       setAllComplete(true);
-      saveToBackend();
+      await saveToBackend();
     } else {
       setCurrentTrial((prev) => prev + 1);
     }

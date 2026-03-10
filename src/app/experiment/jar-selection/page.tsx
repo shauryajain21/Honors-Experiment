@@ -10,7 +10,7 @@ const JAR_SELECTION_STEPS = [
 ];
 import JarDisplay from "@/components/jars/JarDisplay";
 import JarGrid from "@/components/jars/JarGrid";
-import ProbabilityButtons from "@/components/inputs/ProbabilityButtons";
+import ProbabilityInput from "@/components/inputs/ProbabilityInput";
 import ConfidenceSlider from "@/components/inputs/ConfidenceSlider";
 import Button from "@/components/ui/Button";
 import { useExperimentStore } from "@/store/experimentStore";
@@ -190,7 +190,7 @@ export default function JarSelectionPage() {
                   />
                 </div>
 
-                <ProbabilityButtons
+                <ProbabilityInput
                   value={probability}
                   onChange={handleProbabilitySelect}
                   label="Without drawing a ball, what is your initial estimate of the probability of black balls in this jar?"

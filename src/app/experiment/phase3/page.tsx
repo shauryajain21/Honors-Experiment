@@ -12,8 +12,8 @@ export default function Phase3Page() {
   const addPhase3Trial = useExperimentStore((s) => s.addPhase3Trial);
   const saveToBackend = useExperimentStore((s) => s.saveToBackend);
 
-  const handleAllComplete = () => {
-    saveToBackend();
+  const handleAllComplete = async () => {
+    await saveToBackend();
     router.push("/demographics");
   };
 

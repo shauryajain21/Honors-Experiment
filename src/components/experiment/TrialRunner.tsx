@@ -5,7 +5,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import JarDisplay from "@/components/jars/JarDisplay";
 import Ball from "@/components/balls/Ball";
 import BallSequence from "@/components/balls/BallSequence";
-import ProbabilityButtons from "@/components/inputs/ProbabilityButtons";
+import ProbabilityInput from "@/components/inputs/ProbabilityInput";
 import ConfidenceSlider from "@/components/inputs/ConfidenceSlider";
 import Button from "@/components/ui/Button";
 import WizardNarration from "@/components/wizard/WizardNarration";
@@ -21,6 +21,7 @@ const TRIAL_STEPS = [
 
 type TrialState =
   | "DRAWING"
+  | "BALL_RETURN"
   | "ESTIMATING"
   | "CONFIDENCE"
   | "READY_NEXT";
@@ -52,6 +53,7 @@ export default function TrialRunner({
   const [probability, setProbability] = useState<number | null>(null);
   const [confidence, setConfidence] = useState(0);
   const [confidenceInteracted, setConfidenceInteracted] = useState(false);
+  const [showReturnBall, setShowReturnBall] = useState(false);
   const estimateStartRef = useRef<number>(0);
 
   const { playJarShake, playBallBounce } = useAudio();
@@ -72,14 +74,22 @@ export default function TrialRunner({
     playBallBounce();
   }, [jarPercentage, playBallBounce]);
 
-  // After ball bounce animation completes, move to estimating
+  // After ball bounce animation completes, show ball then return it to jar
   const handleBallAnimationComplete = useCallback(() => {
     if (currentBall) {
       setBallSequence((prev) => [...prev, currentBall]);
-      setTrialState("ESTIMATING");
-      estimateStartRef.current = Date.now();
+      // Show ball briefly, then animate it returning to jar
+      setTrialState("BALL_RETURN");
+      setShowReturnBall(true);
     }
   }, [currentBall]);
+
+  // After ball returns to jar, move to estimating
+  const handleBallReturnComplete = useCallback(() => {
+    setShowReturnBall(false);
+    setTrialState("ESTIMATING");
+    estimateStartRef.current = Date.now();
+  }, []);
 
   // Handle probability selection → show confidence
   const handleProbabilitySelect = (value: number) => {
@@ -126,6 +136,7 @@ export default function TrialRunner({
       setProbability(null);
       setConfidence(0);
       setConfidenceInteracted(false);
+      setShowReturnBall(false);
       setTrialState("DRAWING");
     }
   };
@@ -172,7 +183,7 @@ export default function TrialRunner({
                     showPercentage={false}
                   />
 
-                  {/* Current ball animation (during drawing) */}
+                  {/* Current ball animation (during drawing - bounces out) */}
                   <AnimatePresence>
                     {currentBall && trialState === "DRAWING" && (
                       <div className="mt-4">
@@ -186,11 +197,38 @@ export default function TrialRunner({
                     )}
                   </AnimatePresence>
 
-                  {/* Show current ball after animation (static) */}
-                  {currentBall && trialState !== "DRAWING" && (
-                    <div className="mt-4">
-                      <Ball color={currentBall} size={50} />
-                    </div>
+                  {/* Ball returning to jar animation */}
+                  <AnimatePresence>
+                    {showReturnBall && trialState === "BALL_RETURN" && currentBall && (
+                      <motion.div
+                        className="mt-4"
+                        initial={{ y: 0, opacity: 1, scale: 1 }}
+                        animate={{
+                          y: -120,
+                          opacity: 0,
+                          scale: 0.5,
+                        }}
+                        transition={{
+                          duration: 0.8,
+                          ease: "easeIn",
+                        }}
+                        onAnimationComplete={handleBallReturnComplete}
+                      >
+                        <Ball color={currentBall} size={50} />
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+
+                  {/* Label for replacement */}
+                  {trialState === "BALL_RETURN" && (
+                    <motion.p
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      exit={{ opacity: 0 }}
+                      className="text-sm text-gray-500 mt-2 italic"
+                    >
+                      Putting the ball back in the jar...
+                    </motion.p>
                   )}
                 </div>
               </div>
@@ -215,7 +253,7 @@ export default function TrialRunner({
               </motion.div>
             )}
 
-            {/* Estimating state - probability buttons */}
+            {/* Estimating state - slider + text input */}
             {trialState === "ESTIMATING" && (
               <motion.div
                 variants={fadeInVariants}
@@ -223,7 +261,7 @@ export default function TrialRunner({
                 animate="visible"
                 className="space-y-6"
               >
-                <ProbabilityButtons
+                <ProbabilityInput
                   value={probability}
                   onChange={handleProbabilitySelect}
                 />

@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import WizardNarration from "@/components/wizard/WizardNarration";
+import { useExperimentStore } from "@/store/experimentStore";
 
 const LANDING_STEPS = [
   "Hey there! I'm Mr. Croc, your guide for today's experiment. I'll be here to walk you through each step — let's get started!",
@@ -12,12 +13,13 @@ const LANDING_STEPS = [
 export default function LandingPage() {
   const [sonaId, setSonaId] = useState("");
   const router = useRouter();
+  const storeSonaId = useExperimentStore((s) => s.setSonaId);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (sonaId.length >= 4) {
-      // TODO: Store SONA ID in Zustand store
-      router.push("/consent");
+      storeSonaId(sonaId);
+      router.push("/training/instructions");
     }
   };
 

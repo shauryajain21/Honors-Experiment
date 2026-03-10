@@ -15,27 +15,29 @@ export default function DemographicsPage() {
   const [year, setYear] = useState("");
   const [major, setMajor] = useState("");
   const [minor, setMinor] = useState("");
+  const [strategy, setStrategy] = useState("");
   const router = useRouter();
   const setDemographics = useExperimentStore((s) => s.setDemographics);
   const saveToBackend = useExperimentStore((s) => s.saveToBackend);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!gender) return;
+    if (!gender || !strategy.trim()) return;
     setDemographics({
       gender,
       academicYear: year,
       major,
       minor,
+      strategy,
     });
-    saveToBackend();
+    await saveToBackend();
     router.push("/debrief");
   };
 
   return (
     <div className="min-h-screen flex items-center justify-center p-4">
       <WizardNarration steps={DEMOGRAPHICS_STEPS} />
-      <div className="glass-card p-8 w-full max-w-2xl">
+      <div className="glass-card p-8 w-full max-w-2xl max-h-[95vh] overflow-y-auto">
         <div className="space-y-6">
           <h1 className="text-3xl font-bold text-gray-900 text-center">
             We&apos;re almost there!
@@ -45,6 +47,23 @@ export default function DemographicsPage() {
           </p>
 
           <form onSubmit={handleSubmit} className="space-y-6 mt-8">
+            {/* Strategy question */}
+            <div className="space-y-2">
+              <label className="block text-lg font-medium text-gray-900">
+                What strategy did you use to decide the probability of black balls in the jar?
+              </label>
+              <p className="text-sm text-gray-600">
+                Please describe in a few sentences how you made your probability estimates throughout the experiment.
+              </p>
+              <textarea
+                value={strategy}
+                onChange={(e) => setStrategy(e.target.value)}
+                className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:border-nyu-purple text-gray-900 min-h-[120px] resize-y"
+                placeholder="Describe your strategy..."
+                required
+              />
+            </div>
+
             <div className="space-y-2">
               <label className="block text-lg font-medium text-gray-900">
                 What is your gender?
@@ -117,7 +136,8 @@ export default function DemographicsPage() {
 
             <button
               type="submit"
-              className="w-full bg-nyu-purple hover:bg-nyu-violet text-white font-semibold py-3 px-6 rounded-lg transition-colors"
+              disabled={!gender || !strategy.trim()}
+              className="w-full bg-nyu-purple hover:bg-nyu-violet text-white font-semibold py-3 px-6 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             >
               Submit
             </button>
