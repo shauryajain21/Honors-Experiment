@@ -3,7 +3,6 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useExperimentStore } from "@/store/experimentStore";
-import type { DemographicsData } from "@/store/experimentStore";
 import WizardNarration from "@/components/wizard/WizardNarration";
 
 const DEMOGRAPHICS_STEPS = [
@@ -11,10 +10,6 @@ const DEMOGRAPHICS_STEPS = [
 ];
 
 export default function DemographicsPage() {
-  const [gender, setGender] = useState<DemographicsData["gender"] | "">("");
-  const [year, setYear] = useState("");
-  const [major, setMajor] = useState("");
-  const [minor, setMinor] = useState("");
   const [strategy, setStrategy] = useState("");
   const router = useRouter();
   const setDemographics = useExperimentStore((s) => s.setDemographics);
@@ -22,12 +17,12 @@ export default function DemographicsPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!gender || !strategy.trim()) return;
+    if (!strategy.trim()) return;
     setDemographics({
-      gender,
-      academicYear: year,
-      major,
-      minor,
+      gender: "prefer-not-to-share",
+      academicYear: "",
+      major: "",
+      minor: "",
       strategy,
     });
     await saveToBackend();
@@ -64,79 +59,9 @@ export default function DemographicsPage() {
               />
             </div>
 
-            <div className="space-y-2">
-              <label className="block text-lg font-medium text-gray-900">
-                What is your gender?
-              </label>
-              <div className="flex flex-wrap gap-4">
-                {([
-                  { value: "male", label: "Male" },
-                  { value: "female", label: "Female" },
-                  { value: "non-binary", label: "Non-Binary" },
-                  { value: "prefer-not-to-share", label: "Prefer not to share" },
-                ] as const).map((option) => (
-                  <label key={option.value} className="flex items-center">
-                    <input
-                      type="radio"
-                      name="gender"
-                      checked={gender === option.value}
-                      onChange={() => setGender(option.value)}
-                      className="mr-2"
-                      required
-                    />
-                    <span className="text-gray-900">{option.label}</span>
-                  </label>
-                ))}
-              </div>
-            </div>
-
-            <div className="space-y-2">
-              <label htmlFor="year" className="block text-lg font-medium text-gray-900">
-                What year are you in of your college degree?
-              </label>
-              <select
-                id="year"
-                value={year}
-                onChange={(e) => setYear(e.target.value)}
-                className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:border-nyu-purple text-gray-900"
-                required
-              >
-                <option value="">Select...</option>
-                <option value="freshman">Freshman</option>
-                <option value="sophomore">Sophomore</option>
-                <option value="junior">Junior</option>
-                <option value="senior">Senior</option>
-                <option value="masters">Masters</option>
-                <option value="phd">PhD</option>
-                <option value="other">Some other degree</option>
-              </select>
-            </div>
-
-            <div className="space-y-2">
-              <label className="block text-lg font-medium text-gray-900">
-                List your majors/minors
-              </label>
-              <div className="space-y-3">
-                <input
-                  type="text"
-                  value={major}
-                  onChange={(e) => setMajor(e.target.value)}
-                  className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:border-nyu-purple text-gray-900"
-                  placeholder="Major e.g. Psychology"
-                />
-                <input
-                  type="text"
-                  value={minor}
-                  onChange={(e) => setMinor(e.target.value)}
-                  className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:border-nyu-purple text-gray-900"
-                  placeholder="Minor e.g. Computer Science"
-                />
-              </div>
-            </div>
-
             <button
               type="submit"
-              disabled={!gender || !strategy.trim()}
+              disabled={!strategy.trim()}
               className="w-full bg-nyu-purple hover:bg-nyu-violet text-white font-semibold py-3 px-6 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             >
               Submit

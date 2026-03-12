@@ -107,15 +107,6 @@ export default function ProbabilityInput({
         </div>
       </div>
 
-      {/* Current value display */}
-      {interacted && (
-        <div className="text-center">
-          <span className="inline-block bg-nyu-purple text-white px-4 py-2 rounded-lg font-bold text-lg">
-            {sliderValue}%
-          </span>
-        </div>
-      )}
-
       {/* Submit button */}
       <div className="text-center">
         <button

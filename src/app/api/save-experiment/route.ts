@@ -28,6 +28,7 @@ export async function POST(request: NextRequest) {
           demographics_academic_year: data.demographics?.academicYear,
           demographics_major: data.demographics?.major,
           demographics_minor: data.demographics?.minor,
+          demographics_strategy: data.demographics?.strategy,
         },
         { onConflict: "sona_id" }
       );

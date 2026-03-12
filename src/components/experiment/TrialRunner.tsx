@@ -319,7 +319,7 @@ export default function TrialRunner({
 
                 <div className="text-center">
                   <Button onClick={handleNext}>
-                    {currentTrial >= totalTrials ? "Finish" : "Next"}
+                    Next
                   </Button>
                 </div>
               </motion.div>

@@ -45,7 +45,7 @@ export default function ConfidenceSlider({
         {/* Min label with "Least confident" */}
         <div className="text-center min-w-[80px] pt-1">
           <span className="text-sm text-gray-600 font-medium">{min}</span>
-          <div className="text-xs text-gray-500">Least confident</div>
+          <div className="text-xs text-gray-500">Not at all confident</div>
         </div>
 
         {/* Slider */}
@@ -90,7 +90,7 @@ export default function ConfidenceSlider({
         {/* Max label with "Most confident" */}
         <div className="text-center min-w-[80px] pt-1">
           <span className="text-sm text-gray-600 font-medium">{max}</span>
-          <div className="text-xs text-gray-500">Most confident</div>
+          <div className="text-xs text-gray-500">Highly confident</div>
         </div>
       </div>
 
