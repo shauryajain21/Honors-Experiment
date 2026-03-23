@@ -25,6 +25,7 @@ export default function Phase3Page() {
       phaseNumber={3}
       onTrialComplete={addPhase3Trial}
       onAllTrialsComplete={handleAllComplete}
+      saveToBackend={saveToBackend}
       sideJar={{ color: "green", percentage: greenJarPercentage }}
     />
   );

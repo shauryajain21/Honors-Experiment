@@ -33,6 +33,7 @@ interface TrialRunnerProps {
   phaseNumber: 1 | 2 | 3;
   onTrialComplete: (data: TrialData) => void;
   onAllTrialsComplete: () => void;
+  saveToBackend: () => Promise<boolean>;
   sideJar?: { color: "red" | "green"; percentage: number } | null;
 }
 
@@ -43,6 +44,7 @@ export default function TrialRunner({
   phaseNumber,
   onTrialComplete,
   onAllTrialsComplete,
+  saveToBackend,
   sideJar = null,
 }: TrialRunnerProps) {
   const [trialState, setTrialState] = useState<TrialState>("DRAWING");
@@ -126,6 +128,7 @@ export default function TrialRunner({
     };
 
     onTrialComplete(trialData);
+    saveToBackend();
 
     if (currentTrial >= totalTrials) {
       onAllTrialsComplete();

@@ -24,6 +24,7 @@ export default function Phase1Page() {
       phaseNumber={1}
       onTrialComplete={addPhase1Trial}
       onAllTrialsComplete={handleAllComplete}
+      saveToBackend={saveToBackend}
     />
   );
 }
