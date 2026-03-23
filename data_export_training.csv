@@ -1,0 +1,2 @@
+sona_id,trial_number,timestamp,sample_balls,correct_jar,incorrect_jar,selected_jar,is_correct,created_at
+TEST_001,1,2026-02-22T00:01:00+00:00,black|white|black,30,70,30,True,2026-02-23T03:18:45.091647+00:00

@@ -1,0 +1,3 @@
+sona_id,red_jar_percentage,green_jar_percentage,red_jar_initial_probability,red_jar_initial_confidence,green_jar_initial_probability,green_jar_initial_confidence,experiment_start_time,experiment_end_time,demographics_gender,demographics_academic_year,demographics_major,demographics_minor,created_at
+TEST_001,45,72,50,5,,,2026-02-22T00:00:00+00:00,,,,,,2026-02-23T03:18:44.537536+00:00
+,56,18,50,5,,,2026-02-24T02:45:21.674+00:00,2026-02-24T02:58:55.425+00:00,female,senior,"Psychology, Economics",,2026-02-23T03:37:42.078448+00:00

@@ -1,0 +1,3 @@
+sona_id,phase,trial_number,timestamp,jar_type,jar_percentage,drawn_ball,ball_sequence_length,estimated_probability,confidence,reaction_time,created_at
+,1,1,2026-02-23T03:37:22.883+00:00,red,68,white,1,80,6,13691,2026-02-23T03:37:42.699142+00:00
+TEST_001,1,1,2026-02-22T00:02:00+00:00,red,45,black,1,50,7,1500,2026-02-23T03:18:45.171535+00:00
