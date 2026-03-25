@@ -6,7 +6,7 @@ import { useExperimentStore } from "@/store/experimentStore";
 import WizardNarration from "@/components/wizard/WizardNarration";
 
 const DEMOGRAPHICS_STEPS = [
-  "You're almost done! Please answer a few quick questions about yourself.",
+  "You're almost done! Please type your response to the question above.",
 ];
 
 export default function DemographicsPage() {
@@ -38,7 +38,7 @@ export default function DemographicsPage() {
             We&apos;re almost there!
           </h1>
           <p className="text-center text-gray-700">
-            Before we end the study, please take a moment to answer the following questions
+            Before we end the study, please take a moment to answer the question below
           </p>
 
           <form onSubmit={handleSubmit} className="space-y-6 mt-8">
