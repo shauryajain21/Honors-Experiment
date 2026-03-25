@@ -27,6 +27,7 @@ export default function TrainingTrialsPage() {
       setAllComplete(true);
       await saveToBackend();
     } else {
+      saveToBackend();
       setCurrentTrial((prev) => prev + 1);
     }
   };
