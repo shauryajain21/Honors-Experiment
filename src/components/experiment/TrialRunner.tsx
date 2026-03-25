@@ -32,7 +32,7 @@ interface TrialRunnerProps {
   totalTrials: number;
   phaseNumber: 1 | 2 | 3;
   onTrialComplete: (data: TrialData) => void;
-  onAllTrialsComplete: () => void;
+  onAllTrialsComplete: () => void | Promise<void>;
   saveToBackend: () => Promise<boolean>;
   sideJar?: { color: "red" | "green"; percentage: number } | null;
 }
@@ -112,7 +112,7 @@ export default function TrialRunner({
   };
 
   // Handle Next → record data and auto-draw next ball
-  const handleNext = () => {
+  const handleNext = async () => {
     const reactionTime = Date.now() - estimateStartRef.current;
 
     const trialData: TrialData = {
@@ -128,11 +128,11 @@ export default function TrialRunner({
     };
 
     onTrialComplete(trialData);
-    saveToBackend();
 
     if (currentTrial >= totalTrials) {
-      onAllTrialsComplete();
+      await onAllTrialsComplete();
     } else {
+      saveToBackend();
       // Reset for next trial
       setCurrentTrial((prev) => prev + 1);
       setCurrentBall(null);
