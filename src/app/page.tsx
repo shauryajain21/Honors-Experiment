@@ -1,26 +1,35 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import WizardNarration from "@/components/wizard/WizardNarration";
 import { useExperimentStore } from "@/store/experimentStore";
 
+function generateCode(): string {
+  return String(Math.floor(1000 + Math.random() * 9000));
+}
+
 const LANDING_STEPS = [
   "Hey there! I'm Mr. Croc, your guide for today's experiment. I'll be here to walk you through each step — let's get started!",
-  "Please enter your SONA ID below to begin.",
+  "Please note down your participant code shown below before continuing.",
 ];
 
 export default function LandingPage() {
-  const [sonaId, setSonaId] = useState("");
+  const code = useMemo(() => generateCode(), []);
+  const [copied, setCopied] = useState(false);
   const router = useRouter();
   const storeSonaId = useExperimentStore((s) => s.setSonaId);
 
+  const handleCopy = () => {
+    navigator.clipboard.writeText(code);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (sonaId.length >= 4) {
-      storeSonaId(sonaId);
-      router.push("/training/instructions");
-    }
+    storeSonaId(code);
+    router.push("/training/instructions");
   };
 
   return (
@@ -35,30 +44,31 @@ export default function LandingPage() {
             Thank you for participating in this research study.
           </p>
 
-          <form onSubmit={handleSubmit} className="space-y-6 mt-8">
-            <div className="space-y-2">
-              <label htmlFor="sonaId" className="block text-lg font-medium text-gray-900">
-                Please enter your SONA ID
-              </label>
-              <p className="text-sm text-gray-600">
-                Your SONA ID is the identifier used to assign participation credit that you received in your email when you registered to participate in this study
-              </p>
-              <input
-                type="text"
-                id="sonaId"
-                value={sonaId}
-                onChange={(e) => setSonaId(e.target.value)}
-                className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:border-nyu-purple text-gray-900"
-                placeholder="Enter your SONA ID"
-                required
-                minLength={4}
-              />
+          <div className="bg-gray-50 border-2 border-nyu-purple rounded-lg p-6 space-y-3">
+            <p className="text-sm font-medium text-gray-700">
+              Your participant code is:
+            </p>
+            <div className="flex items-center justify-center gap-3">
+              <span className="text-4xl font-bold tracking-widest text-nyu-purple font-mono">
+                {code}
+              </span>
+              <button
+                type="button"
+                onClick={handleCopy}
+                className="text-sm bg-gray-200 hover:bg-gray-300 text-gray-700 px-3 py-1 rounded transition-colors"
+              >
+                {copied ? "Copied!" : "Copy"}
+              </button>
             </div>
+            <p className="text-sm text-gray-500">
+              Please write this down or copy it. You may need it for reference.
+            </p>
+          </div>
 
+          <form onSubmit={handleSubmit}>
             <button
               type="submit"
-              disabled={sonaId.length < 4}
-              className="w-full bg-nyu-purple hover:bg-nyu-violet text-white font-semibold py-3 px-6 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+              className="w-full bg-nyu-purple hover:bg-nyu-violet text-white font-semibold py-3 px-6 rounded-lg transition-colors"
             >
               Continue
             </button>
