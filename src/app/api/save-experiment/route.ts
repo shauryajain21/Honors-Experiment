@@ -76,53 +76,18 @@ export async function POST(request: NextRequest) {
       }
     }
 
-    // Save experiment trials (all phases)
-    const allTrials = [
-      ...(data.phase1Trials || []).map(
-        (t: {
-          trialNumber: number;
-          timestamp: string;
-          jarType: string;
-          jarPercentage: number;
-          drawnBall: string;
-          ballSequence: string[];
-          estimatedProbability: number;
-          confidence: number;
-          reactionTime: number;
-        }) => ({ ...t, phase: 1 })
-      ),
-      ...(data.phase2Trials || []).map(
-        (t: {
-          trialNumber: number;
-          timestamp: string;
-          jarType: string;
-          jarPercentage: number;
-          drawnBall: string;
-          ballSequence: string[];
-          estimatedProbability: number;
-          confidence: number;
-          reactionTime: number;
-        }) => ({ ...t, phase: 2 })
-      ),
-      ...(data.phase3Trials || []).map(
-        (t: {
-          trialNumber: number;
-          timestamp: string;
-          jarType: string;
-          jarPercentage: number;
-          drawnBall: string;
-          ballSequence: string[];
-          estimatedProbability: number;
-          confidence: number;
-          reactionTime: number;
-        }) => ({ ...t, phase: 3 })
-      ),
+    // Save experiment trials (each phase separately to avoid large batch conflicts)
+    const phaseData = [
+      { trials: data.phase1Trials || [], phase: 1 },
+      { trials: data.phase2Trials || [], phase: 2 },
+      { trials: data.phase3Trials || [], phase: 3 },
     ];
 
-    if (allTrials.length > 0) {
-      const trialRows = allTrials.map(
+    for (const { trials, phase } of phaseData) {
+      if (trials.length === 0) continue;
+
+      const trialRows = trials.map(
         (trial: {
-          phase: number;
           trialNumber: number;
           timestamp: string;
           jarType: string;
@@ -134,7 +99,7 @@ export async function POST(request: NextRequest) {
           reactionTime: number;
         }) => ({
           sona_id: data.sonaId,
-          phase: trial.phase,
+          phase,
           trial_number: trial.trialNumber,
           timestamp: trial.timestamp,
           jar_type: trial.jarType,
@@ -155,7 +120,7 @@ export async function POST(request: NextRequest) {
         });
 
       if (trialsError) {
-        console.error("Experiment trials save error:", trialsError);
+        console.error(`Phase ${phase} trials save error:`, trialsError);
       }
     }
 
