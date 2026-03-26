@@ -15,7 +15,12 @@ const LANDING_STEPS = [
 ];
 
 export default function LandingPage() {
-  const code = useMemo(() => generateCode(), []);
+  const resetExperiment = useExperimentStore((s) => s.resetExperiment);
+  const code = useMemo(() => {
+    resetExperiment();
+    return generateCode();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
   const [copied, setCopied] = useState(false);
   const router = useRouter();
   const storeSonaId = useExperimentStore((s) => s.setSonaId);
