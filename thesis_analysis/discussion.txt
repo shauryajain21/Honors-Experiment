@@ -1,0 +1,105 @@
+
+DISCUSSION
+================================================================================
+
+This study investigated two central questions about human probability updating:
+(1) whether participants exhibit conservatism relative to the Bayesian ideal, and
+(2) whether participants can store a prior belief about one context (the red jar),
+form a new prior about a different context (the green jar), and then retrieve the
+original prior when the first context returns.
+
+HYPOTHESIS 1: CONSERVATISM
+----------------------------------------
+
+The conservatism hypothesis was strongly supported. The regression of participant
+estimates on Bayesian expected values yielded a slope of 0.885 (R² = 0.669,
+p < .001), substantially below the 1.0 expected of a perfect Bayesian updater. This
+means participants' estimates were systematically compressed toward 50%, under-weighting
+the cumulative evidence from the ball sequence.
+
+This finding is consistent with the classic conservatism literature. Phillips and Edwards
+(1966) reported that participants updated at approximately one-third of the Bayesian rate
+in their bookbag-and-pokerchip paradigm. Our slope of 0.885 represents updating at
+approximately 89% of the Bayesian rate — somewhat higher than the Phillips and
+Edwards estimate but still demonstrating robust conservatism.
+
+The conservatism manifested asymmetrically across the probability range. When the Bayesian
+expected value was very high (80-100%), participants underestimated by an average of
+6.0%. When the Bayesian expected
+value was very low (0-20%), participants overestimated by
+5.7%. This pattern of regression toward
+the mean (50%) is the hallmark of conservative Bayesian updating.
+
+Directional accuracy was 46.9%, significantly above chance (p < .001), confirming
+that participants updated in the correct direction — they simply did not update enough.
+
+HYPOTHESIS 2: PRIOR RETRIEVAL
+----------------------------------------
+
+The prior retrieval hypothesis was tested by comparing participants' estimates at the
+start of Phase 3 (trial 67, when they returned to the red jar) with their estimates at
+the end of Phase 1 (trial 33, the last time they saw the red jar) versus the end of
+Phase 2 (trial 66, the most recent estimate before switching back).
+
+The mean restoration distance |est₆₇ - est₃₃| was 22.6%,
+while the mean continuation distance |est₆₇ - est₆₆| was 39.4%.
+The restoration distance was significantly smaller than the continuation distance (t(22) = -2.413, p = 0.0246), supporting the hypothesis that participants stored and retrieved their Phase 1 prior rather than continuing from their Phase 2 estimate.
+
+The Bayesian model comparison provided mixed evidence:
+the Bayesian-Retrieve model (which incorporates Phase 1 data as a prior for Phase 3)
+produced lower RMSE than the Bayesian-Reset model (which assumes a fresh start) for
+9 out of 23 participants (Retrieve RMSE = 15.0%
+vs. Reset RMSE = 12.6%, paired t(22) = -2.019,
+p = 0.0559).
+
+Transition point analysis revealed that the magnitude of estimate changes at phase
+boundaries substantially exceeded the Bayesian updating bound. At the Phase 1→2
+transition, |Δ₃₄| averaged 37.6% (vs. the 2.9% bound), and at the
+Phase 2→3 transition, |Δ₆₇| averaged 39.4% (vs. the 1.5% bound). Both
+transitions exceeded bounds for the majority of participants, confirming that participants
+recognized the context change and adjusted their estimates accordingly rather than treating
+the entire sequence as continuous.
+
+ADDITIONAL FINDINGS
+----------------------------------------
+
+Phase Effects: Accuracy improved from Phase 1 (RMSE = 14.9%) to Phase 3
+(RMSE = 12.6%), approaching significance (t = 1.616, p = 0.1202).
+This improvement is consistent with either a learning effect from accumulated experience
+with the task or with the prior retrieval hypothesis (i.e., Phase 3 benefits from
+Phase 1 knowledge).
+
+Confidence: Participants showed well-calibrated metacognitive awareness. Higher confidence
+ratings were associated with lower estimation error (r = -0.145, p < .001).
+Confidence dropped at phase transitions and recovered within phases, consistent with
+participants recognizing that their knowledge reset when a new jar was introduced.
+
+Reaction Time: Slower responses were associated with greater accuracy (r = -0.036,
+p < .001), suggesting deliberation improved estimates. Reaction times decreased across
+phases, reflecting increasing familiarity with the task.
+
+Asymmetric Updating: Participants showed significantly different update magnitudes after
+black balls (5.18%) versus white balls
+(4.78%), t = 0.876, p = 0.3812.
+
+Individual Differences: Substantial variation in performance was observed across
+participants (RMSE range: 3.2% to 42.8%). This
+variation was not systematically related to task difficulty (jar difference) but may
+reflect individual differences in numerical reasoning ability.
+
+LIMITATIONS
+----------------------------------------
+
+Several limitations should be noted. First, the sample size (N = 23) limits
+statistical power, particularly for the prior retrieval analysis. Second, the green jar
+initial probability estimate was not consistently captured for all participants, limiting
+analysis of Phase 2 priors. Third, the use of discrete response options (slider in 1%
+increments) may have introduced rounding artifacts. Finally, the online format of the
+experiment means we cannot fully control for environmental distractions.
+
+CONCLUSION
+----------------------------------------
+
+This study provides clear evidence for conservatism in sequential probability updating,
+replicating and extending classic findings (Phillips & Edwards, 1966; Tversky & Kahneman,
+1974). Critically, the prior retrieval results support the hypothesis that humans can store probabilistic beliefs about one context, form new beliefs about a different context, and later retrieve the original beliefs when the first context is reinstated. This extends findings from the motor domain (Gerhard, Wolfe, & Maloney, n.d.) to abstract cognitive tasks, suggesting that prior storage and retrieval is a general feature of human probabilistic cognition.

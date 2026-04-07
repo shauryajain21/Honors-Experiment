@@ -1,0 +1,20 @@
+MONTE CARLO PRIOR RETRIEVAL ANALYSIS
+============================================================
+
+N = 23 participants
+Simulations per model: 10,000
+
+Classification (BF > 3):
+  RETRIEVE:  9/23 (39%)
+  RESET:     12/23 (52%)
+  AMBIGUOUS: 2/23 (9%)
+
+Group-level mean log(BF): -5.70
+  t(22) = -0.663, p = 0.5143
+  -> Group favors RESET model
+
+Trajectory RMSE:
+  Retrieve: 14.3%
+  Reset:    12.6%
+  Paired t = 1.494, p = 0.1495
+  Retrieve closer for 10/23
