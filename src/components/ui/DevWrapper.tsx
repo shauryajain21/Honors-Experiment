@@ -11,7 +11,7 @@ export default function DevWrapper({ children }: { children: React.ReactNode }) 
     <CrockyProvider>
       {children}
       <FloatingCrocky />
-      {isDev && <DevSkipButton />}
+      <DevSkipButton />
     </CrockyProvider>
   );
 }
